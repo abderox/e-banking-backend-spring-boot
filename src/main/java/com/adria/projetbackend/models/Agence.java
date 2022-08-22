@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data @AllArgsConstructor
@@ -29,5 +32,8 @@ public class Agence {
     @ManyToOne
     @JoinColumn(name = "banque_id")
     private Banque banque;
+
+    @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Client> clients = new ArrayList<>( );
 
 }

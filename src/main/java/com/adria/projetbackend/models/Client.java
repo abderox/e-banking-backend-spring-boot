@@ -47,4 +47,10 @@ public class Client extends User{
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<Compte> comptes = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "agence_agence_id")
+    private Agence agence;
+
+
 }
