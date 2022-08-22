@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data @AllArgsConstructor @NoArgsConstructor
@@ -18,5 +20,6 @@ public class Benificiaire {
     private String rib;
     private String intituleVirement;
 
-
+    @OneToMany
+    private List<Virement> listVirements = new ArrayList<>();
 }
