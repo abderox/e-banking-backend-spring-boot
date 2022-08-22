@@ -16,4 +16,8 @@ public class Compte {
     private String rib;
     private String intituleCompte;
     private boolean inclusVirement;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Client client;
 }

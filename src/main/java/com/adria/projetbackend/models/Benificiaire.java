@@ -17,4 +17,6 @@ public class Benificiaire {
     @Column(length = 24 , unique = true, nullable = false)
     private String rib;
     private String intituleVirement;
+
+
 }
