@@ -53,12 +53,12 @@ public abstract class User {
     @Column(name = "telephone", unique = true, length = 15)
     private String telephone;
 
-    // timestamps : creation date
+
     @CreationTimestamp
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name="created_at" , nullable = false, updatable = false)
     private Date createdAt;
-    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
 
     @ManyToOne
     @JoinColumn(name = "address_id")
@@ -73,9 +73,16 @@ public abstract class User {
 
     private Set<Role> roles = new HashSet<>( );
 
+    @OneToMany(mappedBy = "sender", orphanRemoval = true)
+    private Collection<Message> messages = new ArrayList<>( );
+
+    @OneToMany(mappedBy = "receiver", orphanRemoval = true)
+    private Collection<Message> recievedMsgs = new ArrayList<>( );
+
+
     public User(String username, String password) {
         this.username = username;
-        this.password = encoder.encode(password);
+        this.password = password;
     }
 
     public void addRole(Role role) {
