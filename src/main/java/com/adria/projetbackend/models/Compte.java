@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data @AllArgsConstructor @NoArgsConstructor
 @Entity
@@ -20,4 +22,7 @@ public class Compte {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Client client;
+
+    @OneToMany
+    private List<Transaction> listTransactions = new ArrayList<>();
 }
