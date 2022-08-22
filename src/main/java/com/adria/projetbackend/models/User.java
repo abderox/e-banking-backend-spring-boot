@@ -23,6 +23,7 @@ import java.util.*;
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(name = "uc_user_username_email", columnNames = {"username", "email"})
 })
+
 @NoArgsConstructor @AllArgsConstructor
 public abstract class User {
 
