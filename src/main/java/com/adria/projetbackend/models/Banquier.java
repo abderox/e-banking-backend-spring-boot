@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 
 @Entity
 @Data @AllArgsConstructor @NoArgsConstructor
-@DiscriminatorValue("banquier")
 public class Banquier extends User{
     private String identifiantBanquier;
     private String position;

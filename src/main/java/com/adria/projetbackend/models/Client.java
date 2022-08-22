@@ -10,7 +10,6 @@ import java.util.Date;
 
 @Entity
 @Data @AllArgsConstructor @NoArgsConstructor
-@DiscriminatorValue("client")
 public class Client extends User{
     private String identiiantClient;
     private String typePieceIdentite;

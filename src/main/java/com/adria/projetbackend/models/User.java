@@ -33,6 +33,9 @@ public abstract class User {
     @Column(name="user_id")
     private Long id;
 
+    @Column(name = "type",length = 10)
+    private String type;
+
     @Column( nullable = false  , length = 25)
     private String username;
 
