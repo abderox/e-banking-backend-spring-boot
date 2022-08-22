@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@DiscriminatorValue("BANQUIER")
+@PrimaryKeyJoinColumn(name = "banquier_id")
 @Data @AllArgsConstructor @NoArgsConstructor
 public class Banquier extends User{
     @Id
@@ -18,4 +18,10 @@ public class Banquier extends User{
     private String identifiantBanquier;
     private String position;
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "agence_id")
+    private Agence agence;
+
+
 }

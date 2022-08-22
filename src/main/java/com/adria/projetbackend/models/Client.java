@@ -20,8 +20,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("CLIENT")
 @Data @AllArgsConstructor @NoArgsConstructor
+@PrimaryKeyJoinColumn(name = "client_id")
 public class Client extends User{
 
     @Id

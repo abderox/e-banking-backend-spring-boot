@@ -26,4 +26,7 @@ public class Virement {
     @JoinColumn(name = "id_transaction")
     private Transaction transaction;
 
+
+
+
 }

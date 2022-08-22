@@ -26,6 +26,12 @@ public class Compte {
     @JoinColumn(name = "user_id")
     private Client client;
 
-    @OneToMany
+
+
+    @OneToMany(mappedBy = "compte")
     private List<Transaction> listTransactions = new ArrayList<>();
+
+
+
+
 }
