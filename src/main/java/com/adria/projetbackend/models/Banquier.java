@@ -9,6 +9,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
+@DiscriminatorValue("BANQUIER")
 @Data @AllArgsConstructor @NoArgsConstructor
 public class Banquier extends User{
     private String identifiantBanquier;

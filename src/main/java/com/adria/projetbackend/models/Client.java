@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import java.util.Date;
 
 @Entity
+@DiscriminatorValue("CLIENT")
 @Data @AllArgsConstructor @NoArgsConstructor
 public class Client extends User{
     private String identiiantClient;
