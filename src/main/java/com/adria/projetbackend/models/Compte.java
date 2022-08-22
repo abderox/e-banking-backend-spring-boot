@@ -18,6 +18,9 @@ public class Compte {
     private String rib;
     private String intituleCompte;
     private boolean inclusVirement;
+    private boolean bloqued;
+    private boolean activated;
+    private boolean suspended;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
