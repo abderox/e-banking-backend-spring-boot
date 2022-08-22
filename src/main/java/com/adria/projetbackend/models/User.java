@@ -20,7 +20,6 @@ import java.util.*;
 @Data
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(name = "uc_user_username_email", columnNames = {"username", "email"})
 })

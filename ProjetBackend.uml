@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Persistence</ID>
+  <OriginalElement>JavaeeElement:/a1d63ed7/ProjetBackend/ProjetBackend/jpa/JPA/PersistenceModel</OriginalElement>
+  <nodes>
+    <node x="141.99999999999997" y="0.0">Message#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Message.java</node>
+    <node x="0.0" y="0.0">Address#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Address.java</node>
+    <node x="417.032894736842" y="227.0">Benificiaire#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Benificiaire.java</node>
+    <node x="304.032894736842" y="33.0">Role#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Role.java</node>
+    <node x="330.532894736842" y="456.0">Client#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Client.java</node>
+    <node x="61.49999999999997" y="892.0">Banque#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Banque.java</node>
+    <node x="469.91447368421046" y="33.0">Virement#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Virement.java</node>
+    <node x="359.532894736842" y="696.0">Compte#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Compte.java</node>
+    <node x="128.53289473684202" y="489.0">Banquier#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Banquier.java</node>
+    <node x="415.16447368421046" y="870.0">Transaction#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Transaction.java</node>
+    <node x="141.99999999999997" y="696.0">Agence#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Agence.java</node>
+    <node x="154.03289473684202" y="194.0">User#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/User.java</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Transaction#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Transaction.java" target="Virement#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Virement.java" relationship="RELATION">
+      <point x="-4.736842104762218E-4" y="-83.0" />
+      <point x="511.664" y="835.5" />
+      <point x="646.5384615384617" y="835.5" />
+      <point x="646.5384615384617" y="72.0" />
+      <point x="539.914" y="72.0" />
+      <point x="-4.7368421041937836E-4" y="39.0" />
+    </edge>
+    <edge source="Transaction#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Transaction.java" target="Compte#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Compte.java" relationship="RELATION">
+      <point x="-68.13157894736844" y="-83.0" />
+      <point x="0.0" y="61.0" />
+    </edge>
+    <edge source="Compte#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Compte.java" target="Client#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Client.java" relationship="RELATION">
+      <point x="1.0526315799097574E-4" y="-61.0" />
+      <point x="1.0526315799097574E-4" y="94.0" />
+    </edge>
+    <edge source="Agence#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Agence.java" target="Client#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Client.java" relationship="RELATION">
+      <point x="2.8421709430404007E-14" y="-61.0" />
+      <point x="207.0" y="677.6153846153845" />
+      <point x="414.34069230769217" y="677.6153846153845" />
+      <point x="414.34069230769217" y="644.0" />
+      <point x="1.0526315799097574E-4" y="94.0" />
+    </edge>
+    <edge source="User#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/User.java" target="Message#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Message.java" relationship="RELATION">
+      <point x="-12.032894736842053" y="-105.0" />
+      <point x="0.0" y="72.0" />
+    </edge>
+    <edge source="User#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/User.java" target="Address#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Address.java" relationship="RELATION">
+      <point x="-64.99989473684204" y="0.0" />
+      <point x="81.0" y="299.0" />
+      <point x="81.0" y="246.96153846153845" />
+      <point x="44.0" y="246.96153846153845" />
+      <point x="-17.0" y="72.0" />
+    </edge>
+    <edge source="User#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/User.java" target="Role#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Role.java" relationship="RELATION">
+      <point x="65.0" y="-15.0" />
+      <point x="357.032894736842" y="284.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="Agence#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Agence.java" target="Address#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Address.java" relationship="RELATION">
+      <point x="-64.99999999999997" y="0.0" />
+      <point x="81.0" y="757.0" />
+      <point x="81.0" y="518.0" />
+      <point x="44.0" y="518.0" />
+      <point x="-17.0" y="72.0" />
+    </edge>
+    <edge source="Banque#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Banque.java" target="Address#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Address.java" relationship="RELATION">
+      <point x="-22.96699999999997" y="-61.0" />
+      <point x="111.033" y="871.0" />
+      <point x="44.0" y="871.0" />
+      <point x="-17.0" y="72.0" />
+    </edge>
+    <edge source="Agence#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Agence.java" target="Banquier#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Banquier.java" relationship="RELATION">
+      <point x="-14.999999999999972" y="-61.0" />
+      <point x="-27.032894736842024" y="61.0" />
+    </edge>
+    <edge source="Client#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Client.java" target="Benificiaire#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Benificiaire.java" relationship="RELATION">
+      <point x="56.5" y="-94.0" />
+      <point x="0.0" y="72.0" />
+    </edge>
+    <edge source="Benificiaire#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Benificiaire.java" target="Virement#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Virement.java" relationship="RELATION">
+      <point x="83.00010526315799" y="0.0" />
+      <point x="514.2115384615386" y="299.0" />
+      <point x="514.2115384615386" y="199.99999999999997" />
+      <point x="539.9144736842104" y="199.99999999999997" />
+      <point x="539.9144736842104" y="176.5" />
+      <point x="539.914" y="176.5" />
+      <point x="-4.7368421041937836E-4" y="39.0" />
+    </edge>
+    <edge source="Banque#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Banque.java" target="Agence#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Agence.java" relationship="RELATION">
+      <point x="65.0" y="-61.0" />
+      <point x="-8.0" y="61.0" />
+    </edge>
+    <edge source="Banquier#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Banquier.java" target="User#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/User.java" relationship="INHERITANCE">
+      <point x="1.0526315796255403E-4" y="-61.0" />
+      <point x="219.033" y="421.5" />
+      <point x="308.0" y="421.5" />
+      <point x="308.0" y="299.0" />
+      <point x="65.00010526315799" y="0.0" />
+    </edge>
+    <edge source="Client#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/Client.java" target="User#file://C:/Users/Abdelhadi/Projet-PFA-Backend/src/main/java/com/adria/projetbackend/models/User.java" relationship="INHERITANCE">
+      <point x="-112.99989473684201" y="-83.5" />
+      <point x="308.0" y="466.5" />
+      <point x="308.0" y="299.0" />
+      <point x="65.00010526315799" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.7878787878787878" showDependencies="false" x="310.5" y="541.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Embeddables</Category>
+    <Category>Properties</Category>
+    <Category>Superclasses</Category>
+  </Categories>
+</Diagram>
+

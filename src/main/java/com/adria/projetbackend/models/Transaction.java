@@ -34,4 +34,7 @@ public class Transaction {
     @OneToMany(mappedBy = "transaction")
     private Collection<Virement> virements;
 
+    @ManyToOne
+    @JoinColumn(name = "id_compte")
+    private Compte compte;
 }
