@@ -3,6 +3,7 @@ package com.adria.projetbackend.models;
 
 
 import com.adria.projetbackend.utils.enums.RolesE;
+import com.adria.projetbackend.utils.enums.TypeUser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -22,6 +23,7 @@ public class Role {
     private Long id;
     @Enumerated(EnumType.STRING)
     private RolesE name;
+
 
     public Role(RolesE name) {
         this.name = name;
