@@ -3,5 +3,6 @@
   <component name="JpaPluginProjectSettings">
     <option name="entityNameTemplate" value="${className.underscore()}" />
     <option name="scaffoldingLanguage" />
+    <option name="lastSelectedLanguage" value="Java" />
   </component>
 </project>
