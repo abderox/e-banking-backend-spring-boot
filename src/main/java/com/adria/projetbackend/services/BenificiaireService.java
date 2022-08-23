@@ -17,7 +17,7 @@ public class BenificiaireService {
 
     public Benificiaire modifierBenificiaire(Long idBenificiaireAModifie,Benificiaire benificiaire){
         Benificiaire benificiaire1 = benificiaireRepository.findById(idBenificiaireAModifie).get();
-        if (benificiaire1.equals(null)) throw new RuntimeException("benificiaire non existe");
+        if (benificiaire1.equals(null)) throw new RuntimeException("benificiaire non existant");
         benificiaire1.setIntituleVirement(benificiaire.getIntituleVirement());
         benificiaire1.setNature(benificiaire.getNature());
         benificiaire1.setNom(benificiaire.getNom());
@@ -33,7 +33,7 @@ public class BenificiaireService {
 
     public Benificiaire consulterBenificiaire(Long idBenificiaire){
         Benificiaire benificiaire = benificiaireRepository.findById(idBenificiaire).get();
-        if (benificiaire.equals(null)) throw new RuntimeException("benificiaire non existe");
+        if (benificiaire.equals(null)) throw new RuntimeException("benificiaire non existant");
         return benificiaire;
     }
 

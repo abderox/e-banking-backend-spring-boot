@@ -26,7 +26,9 @@ public class Virement {
     @JoinColumn(name = "id_transaction")
     private Transaction transaction;
 
-
+    @ManyToOne
+    @JoinColumn(name = "id_benificiare")
+    private Benificiaire benificiaire;
 
 
 }
