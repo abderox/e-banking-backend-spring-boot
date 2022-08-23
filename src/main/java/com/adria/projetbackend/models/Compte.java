@@ -16,6 +16,7 @@ public class Compte {
     private Long id;
     @Column(length = 24)
     private String rib;
+    private double solde;
     private String intituleCompte;
     private boolean inclusVirement;
     private boolean bloqued;
