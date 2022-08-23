@@ -29,7 +29,7 @@ public class Client extends User{
     @Column(name = "id_client")
     private Long id;
 
-    private String identiiantClient;
+    private String identifiantClient;
     private String numPieceIdentite;
 
     @Enumerated(EnumType.STRING)
@@ -42,7 +42,7 @@ public class Client extends User{
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateNaissance;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER , mappedBy = "client")
     private List<Benificiaire> benificiaires = new ArrayList<>();
 
 

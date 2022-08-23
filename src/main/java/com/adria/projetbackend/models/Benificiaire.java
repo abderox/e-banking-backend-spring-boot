@@ -20,6 +20,18 @@ public class Benificiaire {
     private String rib;
     private String intituleVirement;
 
-    @OneToMany
+    @OneToMany(mappedBy = "benificiaire")
     private List<Virement> listVirements = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "id_client")
+    private Client client;
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }

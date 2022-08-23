@@ -11,4 +11,18 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
     List<Client> findClientsByAgence(Agence agence);
+
+    Client findByEmail(String email);
+
+    Client findByUsername(String username);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByIdentifiantClient(String identifiantClient);
+
+    Client findByIdentifiantClient(String identifiantClient);
+
+    void deleteByIdentifiantClient(String identifiantClient);
 }
