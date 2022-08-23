@@ -30,7 +30,7 @@ public class Banque {
     private Address address;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "banque")
+    @OneToMany(mappedBy = "banque",fetch = FetchType.EAGER)
     private List<Agence> agences;
 
 

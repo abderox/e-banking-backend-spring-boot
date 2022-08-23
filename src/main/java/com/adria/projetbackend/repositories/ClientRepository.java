@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    List<Client> findClientsByAgence(Agence agence);
+    List<Client> findClientsByAgence_Id(Long agenceId);
+    List<Client> findClientsByAgence_Code(Integer agenceCode);
 }

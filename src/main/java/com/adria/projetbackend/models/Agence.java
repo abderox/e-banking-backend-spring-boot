@@ -36,7 +36,7 @@ public class Agence {
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Client> clients = new ArrayList<>( );
 
-    @OneToMany(mappedBy = "agence")
+    @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
     private List<Banquier> banquiers = new ArrayList<>( );
 
 

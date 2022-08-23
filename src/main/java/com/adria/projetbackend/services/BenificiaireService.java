@@ -3,9 +3,10 @@ package com.adria.projetbackend.services;
 import com.adria.projetbackend.models.Benificiaire;
 import com.adria.projetbackend.repositories.BenificiaireRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class BenificiaireService {
     @Autowired
     private BenificiaireRepository benificiaireRepository;

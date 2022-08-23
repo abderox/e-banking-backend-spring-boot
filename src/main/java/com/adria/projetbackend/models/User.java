@@ -59,8 +59,8 @@ public abstract class User {
     private Date createdAt;
 
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id" )
     private Address address;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
