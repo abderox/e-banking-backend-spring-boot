@@ -1,5 +1,6 @@
 package com.adria.projetbackend.security;
 
+import com.adria.projetbackend.utils.constants.SecurityAuthConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -32,11 +33,7 @@ public class ApplicationSecurity {
         http.sessionManagement( ).sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests((authorize) -> authorize
-
-                .antMatchers("/**").permitAll( )
-                .antMatchers(
-                        "/user/registration",
-                        "/api/v1/logout").permitAll( )
+                .antMatchers(SecurityAuthConstants.ANY_URL_V1).permitAll( )
                 .anyRequest( ).authenticated( )
         );
 
