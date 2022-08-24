@@ -1,18 +1,18 @@
 package com.adria.projetbackend.models;
 
-import com.adria.projetbackend.utils.enums.TypeTransaction;
 import com.adria.projetbackend.utils.enums.TypeVirement;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.Objects;
 
 @Entity
-@Data @AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 public class Virement {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +30,16 @@ public class Virement {
     @JoinColumn(name = "id_benificiare")
     private Benificiaire benificiaire;
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || Hibernate.getClass(this) != Hibernate.getClass(o) ) return false;
+        Virement virement = (Virement) o;
+        return id != null && Objects.equals(id, virement.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass( ).hashCode( );
+    }
 }

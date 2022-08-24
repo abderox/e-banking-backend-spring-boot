@@ -1,14 +1,18 @@
 package com.adria.projetbackend.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 
-@Data @AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 @Entity
 public class Compte {
     @Column(name = "id_compte")
@@ -27,12 +31,20 @@ public class Compte {
     @JoinColumn(name = "user_id")
     private Client client;
 
+    @OneToMany(mappedBy = "compte", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<Transaction> transactions = new LinkedHashSet<>( );
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || Hibernate.getClass(this) != Hibernate.getClass(o) ) return false;
+        Compte compte = (Compte) o;
+        return id != null && Objects.equals(id, compte.id);
+    }
 
-    @OneToMany(mappedBy = "compte")
-    private List<Transaction> listTransactions = new ArrayList<>();
-
-
-
-
+    @Override
+    public int hashCode() {
+        return getClass( ).hashCode( );
+    }
 }

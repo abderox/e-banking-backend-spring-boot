@@ -1,17 +1,19 @@
 package com.adria.projetbackend.models;
 
 
-import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,4 +40,16 @@ public class Message {
     @JoinColumn(name = "id_reciever")
     private User receiver;
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || Hibernate.getClass(this) != Hibernate.getClass(o) ) return false;
+        Message message = (Message) o;
+        return id != null && Objects.equals(id, message.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass( ).hashCode( );
+    }
 }

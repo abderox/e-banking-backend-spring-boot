@@ -2,25 +2,26 @@ package com.adria.projetbackend.models;
 
 import com.adria.projetbackend.utils.enums.TypePieceID;
 import com.adria.projetbackend.utils.enums.TypeSituationFam;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-//<<<<<<< HEAD
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-//=======
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-//>>>>>>> defcf7048060055280a33b23b7deb72322ab875f
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+//<<<<<<< HEAD
+//=======
+//>>>>>>> defcf7048060055280a33b23b7deb72322ab875f
 
 @Entity
-@Data @AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "client_id")
 public class Client extends User{
 
@@ -52,7 +53,19 @@ public class Client extends User{
     private Agence agence;
 
     @OneToMany(mappedBy = "client", orphanRemoval = true)
+    @ToString.Exclude
     private List<Compte> comptes = new ArrayList<>( );
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || Hibernate.getClass(this) != Hibernate.getClass(o) ) return false;
+        Client client = (Client) o;
+        return id != null && Objects.equals(id, client.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass( ).hashCode( );
+    }
 }

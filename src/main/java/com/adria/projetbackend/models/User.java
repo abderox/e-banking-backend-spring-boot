@@ -1,23 +1,20 @@
 package com.adria.projetbackend.models;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.ManyToAny;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users", uniqueConstraints = {
@@ -75,9 +72,11 @@ public abstract class User {
     private Set<Role> roles = new HashSet<>( );
 
     @OneToMany(mappedBy = "sender", orphanRemoval = true)
+    @ToString.Exclude
     private Collection<Message> messages = new ArrayList<>( );
 
     @OneToMany(mappedBy = "receiver", orphanRemoval = true)
+    @ToString.Exclude
     private Collection<Message> recievedMsgs = new ArrayList<>( );
 
 
@@ -90,5 +89,16 @@ public abstract class User {
         this.roles.add(role);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || Hibernate.getClass(this) != Hibernate.getClass(o) ) return false;
+        User user = (User) o;
+        return id != null && Objects.equals(id, user.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass( ).hashCode( );
+    }
 }
