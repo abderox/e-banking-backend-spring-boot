@@ -284,6 +284,12 @@ public class OnStartEventListner {
         return f2.parse(year + "-" + month + "-" + day);
     }
 
+    public String generateClientId(String codeAgence , Long idClient , Long idBanque )
+    {
+        String identifiant = String.format("%040d", new BigInteger(String.valueOf(idClient),8)).substring(0,5);
+        return codeAgence + identifiant + idBanque;
+    }
+
 
 }
 

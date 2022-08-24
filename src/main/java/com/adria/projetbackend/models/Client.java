@@ -2,6 +2,7 @@ package com.adria.projetbackend.models;
 
 import com.adria.projetbackend.utils.enums.TypePieceID;
 import com.adria.projetbackend.utils.enums.TypeSituationFam;
+import com.adria.projetbackend.utils.enums.TypeStatus;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,15 +13,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-//<<<<<<< HEAD
-//=======
-//>>>>>>> defcf7048060055280a33b23b7deb72322ab875f
 
 @Entity
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @AllArgsConstructor @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "client_id")
 public class Client extends User{
@@ -42,6 +39,9 @@ public class Client extends User{
     private String metier;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateNaissance;
+
+    @Enumerated(EnumType.ORDINAL)
+    private TypeStatus status;
 
     @OneToMany(fetch = FetchType.EAGER , mappedBy = "client")
     private List<Benificiaire> benificiaires = new ArrayList<>();

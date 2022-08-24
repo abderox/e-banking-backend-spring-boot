@@ -9,7 +9,6 @@ import java.util.*;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @AllArgsConstructor @NoArgsConstructor
 @Entity
 public class Compte {

@@ -56,9 +56,16 @@ class ProjetBackendApplicationTests {
 //        System.out.println(cl.getCreatedAt());
 //
 //        User User = userRepository.findUserByUsername("ade");
-        String lUUID = String.format("%040d", new BigInteger(UUID.randomUUID().toString().replace("-", "").substring(1,15), 16)).replace("0","");
-        Long uuid = Long.parseLong(lUUID);
-        System.out.println(uuid);
+//        String lUUID = String.format("%040d", new BigInteger(UUID.randomUUID().toString().replace("-", "").substring(1,15), 16)).replace("0","");
+//        Long uuid = Long.parseLong(lUUID);
+//        System.out.println(uuid);
+
+        System.out.println(generateClientId("0011",495L,36L) );
+    }
+    public String generateClientId(String codeAgence , Long idClient , Long idBanque )
+    {
+        String identifiant = String.format("%040d", new BigInteger(String.valueOf(idClient),8)).substring(0,5);
+        return codeAgence + identifiant + idBanque;
     }
 
 }
