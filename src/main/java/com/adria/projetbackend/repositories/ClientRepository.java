@@ -10,11 +10,10 @@ import java.util.List;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-<<<<<<< HEAD
+
     List<Client> findClientsByAgence_Id(Long agenceId);
-    List<Client> findClientsByAgence_Code(Integer agenceCode);
-=======
-    List<Client> findClientsByAgence(Agence agence);
+
+    List<Client> findClientsByAgence_Code(String agenceCode);
 
     Client findByEmail(String email);
 
@@ -29,5 +28,5 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Client findByIdentifiantClient(String identifiantClient);
 
     void deleteByIdentifiantClient(String identifiantClient);
->>>>>>> a7855b02191916a0a7f8e6b1588bde4bc046bd8c
+
 }

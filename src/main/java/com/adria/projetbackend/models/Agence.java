@@ -26,7 +26,7 @@ public class Agence {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "agence_id")
     private Long id;
-    @Column(length = 10 )
+    @Column(length = 6 )
     private String code;
     private String email;
     @Column(length = 15 )

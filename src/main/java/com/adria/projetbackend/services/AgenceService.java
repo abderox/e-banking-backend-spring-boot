@@ -25,36 +25,37 @@ public class AgenceService {
     private ClientRepository clientRepository;
 
 
-    public List<Banquier> getBanquiersOfAgence(Long agenceId){
+    public List<Banquier> getBanquiersOfAgence(Long agenceId) {
         return banquierRepository.findBanquiersByAgence_Id(agenceId);
     }
 
-    public List<Client> getClientsOfAgence(Long agenceId){
+    public List<Client> getClientsOfAgence(Long agenceId) {
         return clientRepository.findClientsByAgence_Id(agenceId);
     }
-    public List<Client> getClientsOfAgence(Integer agenceCode){
+
+    public List<Client> getClientsOfAgence(String agenceCode) {
         return clientRepository.findClientsByAgence_Code(agenceCode);
     }
 
 
-    public Agence addAgence(Agence agence){
-        if(!agenceExists(agence.getCode())){
+    public Agence addAgence(Agence agence) {
+        if ( !agenceExists(agence.getCode( )) ) {
             return agenceRepository.save(agence);
         }
-        return getAgence(agence.getCode());
+        return getAgence(agence.getCode( ));
     }
 
-    public Agence getAgence(String code){
+    public Agence getAgence(String code) {
         return agenceRepository.findByCode(code);
     }
 
-    public boolean agenceExists(String code){
+    public boolean agenceExists(String code) {
         return agenceRepository.existsByCode(code);
     }
 
 
     public void update(Agence agence) {
-        if ( agenceExists(agence.getCode()) ) {
+        if ( agenceExists(agence.getCode( )) ) {
             agenceRepository.save(agence);  // update
         }
     }
