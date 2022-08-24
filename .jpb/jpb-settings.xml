@@ -2,6 +2,7 @@
 <project version="4">
   <component name="JpaPluginProjectSettings">
     <option name="entityNameTemplate" value="${className.underscore()}" />
+    <option name="useLazyOnToOneAssociations" value="true" />
     <option name="scaffoldingLanguage" />
     <option name="lastSelectedLanguage" value="Java" />
   </component>

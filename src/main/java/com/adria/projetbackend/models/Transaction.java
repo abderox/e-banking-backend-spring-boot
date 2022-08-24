@@ -35,13 +35,13 @@ public class Transaction {
     private double montant;
     private String referenceTransaction;
 
-    @OneToMany(mappedBy = "transaction")
     @ToString.Exclude
+    @OneToMany(mappedBy = "transaction")
     private Collection<Virement> virements;
 
 
     @ManyToOne
-    @JoinColumn(name = "compte_id_compte")
+    @JoinColumn(name = "id_compte")
     private Compte compte;
 
 

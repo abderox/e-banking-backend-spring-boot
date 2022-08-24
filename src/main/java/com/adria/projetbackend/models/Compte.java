@@ -4,9 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -31,9 +29,11 @@ public class Compte {
     @JoinColumn(name = "user_id")
     private Client client;
 
-    @OneToMany(mappedBy = "compte", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private Set<Transaction> transactions = new LinkedHashSet<>( );
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "compte")
+    private List<Transaction> transactions = new ArrayList<>( );
+
+
 
     @Override
     public boolean equals(Object o) {
