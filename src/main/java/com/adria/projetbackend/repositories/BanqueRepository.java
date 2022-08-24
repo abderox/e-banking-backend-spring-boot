@@ -6,4 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BanqueRepository extends JpaRepository<Banque, Long> {
+
+    Banque findByRaisonSocialeContains(String raisonSociale);
+
+    boolean existsByRaisonSocialeContains(String raisonSociale);
 }

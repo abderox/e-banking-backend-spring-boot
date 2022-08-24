@@ -11,4 +11,8 @@ import java.util.List;
 public interface BanquierRepository extends JpaRepository<Banquier, Long> {
 
     List<Banquier> findBanquiersByAgence(Agence agence);
+
+    Banquier findByIdentifiantBanquier(String identifiantBanquier);
+
+    boolean existsByIdentifiantBanquier(String identifiant);
 }
