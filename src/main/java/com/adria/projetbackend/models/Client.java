@@ -56,6 +56,8 @@ public class Client extends User{
     @ToString.Exclude
     private List<Compte> comptes = new ArrayList<>( );
 
+
+
     @Override
     public boolean equals(Object o) {
         if ( this == o ) return true;

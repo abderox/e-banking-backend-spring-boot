@@ -1,4 +1,4 @@
-package com.adria.projetbackend.services;
+package com.adria.projetbackend.services.Client;
 
 import com.adria.projetbackend.models.Client;
 

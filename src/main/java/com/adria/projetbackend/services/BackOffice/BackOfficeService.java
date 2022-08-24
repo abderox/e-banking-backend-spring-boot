@@ -1,23 +1,21 @@
-package com.adria.projetbackend.services;
+package com.adria.projetbackend.services.BackOffice;
 
 
 import com.adria.projetbackend.exceptions.AlreadyUsedEmail;
 import com.adria.projetbackend.models.Client;
 import com.adria.projetbackend.repositories.ClientRepository;
 import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
-import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 @Service
-public class BackOfficeService {
+public class BackOfficeService implements IBackOfficeServices {
 
     Logger LOGGER = LoggerFactory.getLogger(BackOfficeService.class);
     @Autowired
@@ -45,20 +43,20 @@ public class BackOfficeService {
     }
 
 
-    Client consulterClientById(Long id) {
+    public Client consulterClientById(Long id) {
         if ( idExists(id) ) {
             return clientRepository.findById(id).get( );
         } else throw new RuntimeException("CUSTOMER WITH THAT ID DOES NOT EXIST");
 
     }
 
-    Client consulterClientByUsername(String username) {
+    public Client consulterClientByUsername(String username) {
         if ( usernameExists(username) ) {
             return clientRepository.findByUsername(username);
         } else throw new RuntimeException("CUSTOMER WITH THAT USERNAME DOES NOT EXIST");
     }
 
-    Client consulterClientByEmail(String email) {
+    public Client consulterClientByEmail(String email) {
         if ( emailExists(email) ) {
             return clientRepository.findByEmail(email);
         } else {

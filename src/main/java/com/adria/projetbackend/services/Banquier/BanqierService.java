@@ -1,4 +1,4 @@
-package com.adria.projetbackend.services;
+package com.adria.projetbackend.services.Banquier;
 
 import com.adria.projetbackend.models.Banquier;
 import com.adria.projetbackend.repositories.BanquierRepository;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class BanqierService {
+public class BanqierService implements IBanquierService {
 
     @Autowired
     private BanquierRepository banquierRepository;
@@ -24,7 +24,7 @@ public class BanqierService {
         return banquierRepository.findByIdentifiantBanquier(identifiant);
     }
 
-    boolean banquierExists(String identifiant){
+    public boolean banquierExists(String identifiant){
         return banquierRepository.existsByIdentifiantBanquier(identifiant);
     }
 
