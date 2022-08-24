@@ -19,6 +19,5 @@ public class Address {
     private String ville;
     @Column( length = 40)
     private String province;
-    @Column( length = 40)
-    private String rue;
+
 }

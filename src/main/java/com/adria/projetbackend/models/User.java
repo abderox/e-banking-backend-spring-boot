@@ -52,6 +52,8 @@ public abstract class User {
     @Column(name = "telephone", unique = true, length = 15)
     private String telephone;
 
+    @Column( length = 40)
+    private String rue;
 
     @CreationTimestamp
     @DateTimeFormat(pattern = "yyyy-MM-dd")
