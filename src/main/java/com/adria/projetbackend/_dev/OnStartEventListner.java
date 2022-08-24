@@ -2,9 +2,13 @@
 // * @project projetbackend
 
 package com.adria.projetbackend._dev;
+
 import com.adria.projetbackend.models.*;
+import com.adria.projetbackend.repositories.ClientRepository;
 import com.adria.projetbackend.services.*;
+import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import com.adria.projetbackend.utils.enums.RolesE;
+import com.adria.projetbackend.utils.enums.TypeStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +41,8 @@ public class OnStartEventListner {
     private BankService bankService;
     @Autowired
     private AgenceService agenceService;
+    @Autowired
+    private BackOfficeService backOfficeService;
 
 
     @Transactional
@@ -182,7 +188,7 @@ public class OnStartEventListner {
         banquier.setTelephone("+21696691545");
         banquier.setIdentifiantBanquier(uuid + "");
         banquier.setRue("rue de la paix");
-        banquier.setDateEmbauche(chooseDate(2022, 8, 19));
+        banquier.setDateEmbauche(UtilsMethods.chooseDate(2022, 8, 19));
         banquier.setAddress(add3);
         banquier.setAgence(ag4);
 
@@ -199,7 +205,7 @@ public class OnStartEventListner {
         banquier2.setStatus("active");
         banquier2.setTelephone("+21696699799");
         banquier2.setIdentifiantBanquier((uuid + 1) + "");
-        banquier2.setDateEmbauche(chooseDate(2022, 5, 12));
+        banquier2.setDateEmbauche(UtilsMethods.chooseDate(2022, 5, 12));
         banquier2.setRue("talghazite");
         banquier2.setAddress(add1);
         banquier2.setAgence(ag1);
@@ -218,7 +224,7 @@ public class OnStartEventListner {
         banquier4.setStatus("active");
         banquier4.setTelephone("+21696695792");
         banquier4.setIdentifiantBanquier((uuid + 3) + "");
-        banquier4.setDateEmbauche(chooseDate(2022, 1, 12));
+        banquier4.setDateEmbauche(UtilsMethods.chooseDate(2022, 1, 12));
         banquier4.setRue("dwar jdid");
         banquier4.setAddress(add1);
         banquier4.setAgence(ag1);
@@ -237,7 +243,7 @@ public class OnStartEventListner {
         banquier3.setStatus("active");
         banquier3.setTelephone("+21696699998");
         banquier3.setRue("Jnane awrad");
-        banquier4.setDateEmbauche(chooseDate(2022, 10, 20));
+        banquier4.setDateEmbauche(UtilsMethods.chooseDate(2022, 10, 20));
         banquier3.setAddress(add2);
         banquier3.setAgence(ag2);
 
@@ -245,6 +251,25 @@ public class OnStartEventListner {
         banquierService.registerBanquier(banquier3);
         banquierService.registerBanquier(banquier2);
         banquierService.registerBanquier(banquier4);
+
+        // ! les clients de test
+
+        Client client = new Client( );
+        client.setUsername("client");
+        client.setPassword("client");
+        client.setEmail("client@gmail.com");
+        client.setDateNaissance(UtilsMethods.chooseDate(1996, 01, 01));
+        client.setMetier("Empolye");
+        client.setAgence(ag1);
+        client.setFirstName("client");
+        client.setLastName("client");
+        client.setStatus(TypeStatus.ACTIVE);
+        client.setTelephone("+21696591545");
+        client.setRue("Aoukhrib");
+        client.setAddress(add1);
+
+        backOfficeService.ajouterNouveauClient(client);
+
 
 
         alreadySetup = true;
@@ -254,10 +279,10 @@ public class OnStartEventListner {
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
-        logger.info("*\t"+ banquier +"\t*");
-        logger.info("*\t"+ banquier3 +"\t*");
-        logger.info("*\t"+ banquier2 +"\t*");
-        logger.info("*\t"+ banquier4 +"\t*");
+        logger.info("*\t" + banquier.getEmail( ) + "  " + banquier.getPassword( ) + "\t*");
+        logger.info("*\t" + banquier3.getEmail( ) + "  " + banquier3.getPassword( ) + "\t*");
+        logger.info("*\t" + banquier2.getEmail( ) + "  " + banquier2.getPassword( ) + "\t*");
+        logger.info("*\t" + banquier4.getEmail( ) + "  " + banquier4.getPassword( ) + "\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
@@ -276,18 +301,6 @@ public class OnStartEventListner {
             createRoleIfNotFound(role);
             logger.info("Role " + role.name( ) + " created");
         }
-    }
-
-
-    public Date chooseDate(int year, int month, int day) throws ParseException {
-        SimpleDateFormat f2 = new SimpleDateFormat("yyyy-MM-dd");
-        return f2.parse(year + "-" + month + "-" + day);
-    }
-
-    public String generateClientId(String codeAgence , Long idClient , Long idBanque )
-    {
-        String identifiant = String.format("%040d", new BigInteger(String.valueOf(idClient),8)).substring(0,5);
-        return codeAgence + identifiant + idBanque;
     }
 
 

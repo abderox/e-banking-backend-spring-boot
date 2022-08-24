@@ -29,4 +29,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     void deleteByIdentifiantClient(String identifiantClient);
 
+    Client findTopByOrderByIdDesc();
+
 }

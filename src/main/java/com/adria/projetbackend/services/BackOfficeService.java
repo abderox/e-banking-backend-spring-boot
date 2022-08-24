@@ -4,6 +4,7 @@ package com.adria.projetbackend.services;
 import com.adria.projetbackend.exceptions.AlreadyUsedEmail;
 import com.adria.projetbackend.models.Client;
 import com.adria.projetbackend.repositories.ClientRepository;
+import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import lombok.extern.java.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +27,18 @@ public class BackOfficeService {
     private PasswordEncoder passwordEncoder;
 
 
-    Client ajouterNouveauClient(Client client) {
+    public Client ajouterNouveauClient(Client client) {
 
         if ( emailExists(client.getEmail( )) ) {
             throw new AlreadyUsedEmail("There is an account with that email address: " + client.getEmail( ));
         }
+
+        Long lastIdInDb = clientRepository.findTopByOrderByIdDesc( ) != null ? clientRepository.findTopByOrderByIdDesc( ).getId( ) : 0;
+        client.setIdentifiantClient(UtilsMethods.generateClientId(
+                client.getAgence( ).getCode( ),
+                (lastIdInDb + 1) + "",
+                client.getAgence( ).getBanque( ).getId( ).toString( )));
+
         client.setPassword(passwordEncoder.encode(client.getPassword( )));
         LOGGER.debug(client.toString( ));
         return clientRepository.save(client);

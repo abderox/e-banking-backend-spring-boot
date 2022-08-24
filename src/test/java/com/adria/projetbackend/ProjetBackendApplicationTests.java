@@ -1,24 +1,18 @@
 package com.adria.projetbackend;
 
-import com.adria.projetbackend.models.Address;
-import com.adria.projetbackend.models.Agence;
-import com.adria.projetbackend.models.Banque;
+import com.adria.projetbackend.models.Client;
 import com.adria.projetbackend.repositories.AddressRepository;
 import com.adria.projetbackend.repositories.AgenceRepository;
 import com.adria.projetbackend.repositories.BanqueRepository;
-import com.adria.projetbackend.repositories.BanquierRepository;
 import com.adria.projetbackend.services.AgenceService;
-import com.adria.projetbackend.models.Client;
-import com.adria.projetbackend.models.User;
 import com.adria.projetbackend.repositories.ClientRepository;
 import com.adria.projetbackend.repositories.UserRepository;
+import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.UUID;
+import java.text.ParseException;
 
 @SpringBootTest
 class ProjetBackendApplicationTests {
@@ -39,7 +33,7 @@ class ProjetBackendApplicationTests {
     private UserRepository userRepository;
 
     @Test
-    void contextLoads() {
+    void contextLoads() throws ParseException {
 
 
 //        Client client = new Client();
@@ -60,12 +54,13 @@ class ProjetBackendApplicationTests {
 //        Long uuid = Long.parseLong(lUUID);
 //        System.out.println(uuid);
 
-        System.out.println(generateClientId("0011",495L,36L) );
+//        System.out.println(UtilsMethods.generateClientId("0011","495","36") );
+//        System.out.println(UtilsMethods.generateClientId("0011","320","36") );
+//
+
+
+
     }
-    public String generateClientId(String codeAgence , Long idClient , Long idBanque )
-    {
-        String identifiant = String.format("%040d", new BigInteger(String.valueOf(idClient),8)).substring(0,5);
-        return codeAgence + identifiant + idBanque;
-    }
+
 
 }
