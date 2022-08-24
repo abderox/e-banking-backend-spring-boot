@@ -13,5 +13,6 @@ public interface IUserService {
     String getDetailsFromSubject(String token);
     Claims parseClaims(String token);
     Set<String> getAuthorities(String token) throws IOException;
+    UserE findUserByEmail(String email);
 
 }
