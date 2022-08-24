@@ -10,6 +10,7 @@ import com.adria.projetbackend.services.Banquier.BanqierService;
 import com.adria.projetbackend.services.Banquier.IBanquierService;
 import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import com.adria.projetbackend.utils.enums.RolesE;
+import com.adria.projetbackend.utils.enums.TypePieceID;
 import com.adria.projetbackend.utils.enums.TypeStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -256,20 +257,22 @@ public class OnStartEventListner {
         // ! les clients de test
 
         Client client = new Client( );
-        client.setUsername("client");
+        client.setUsername("client2");
         client.setPassword("client");
-        client.setEmail("client@gmail.com");
+        client.setEmail("client2@gmail.com");
         client.setDateNaissance(UtilsMethods.chooseDate(1996, 01, 01));
         client.setMetier("Empolye");
         client.setAgence(ag1);
         client.setFirstName("client");
         client.setLastName("client");
         client.setStatus(TypeStatus.ACTIVE);
-        client.setTelephone("+21696591545");
+        client.setTelephone("+21696591345");
+        client.setNumPieceIdentite("JH51610");
+        client.setTypePieceID(TypePieceID.ID);
         client.setRue("Aoukhrib");
         client.setAddress(add1);
 
-        backOfficeService.ajouterNouveauClient(client);
+//        backOfficeService.ajouterNouveauClient(client);
 
 
 

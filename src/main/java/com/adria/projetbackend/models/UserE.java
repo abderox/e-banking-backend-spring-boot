@@ -21,7 +21,7 @@ import java.util.*;
 })
 
 @NoArgsConstructor @AllArgsConstructor
-public abstract class User {
+public abstract class UserE {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,7 +79,7 @@ public abstract class User {
     private Collection<Message> recievedMsgs = new ArrayList<>( );
 
 
-    public User(String username, String password) {
+    public UserE(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -92,7 +92,7 @@ public abstract class User {
     public boolean equals(Object o) {
         if ( this == o ) return true;
         if ( o == null || Hibernate.getClass(this) != Hibernate.getClass(o) ) return false;
-        User user = (User) o;
+        UserE user = (UserE) o;
         return id != null && Objects.equals(id, user.id);
     }
 

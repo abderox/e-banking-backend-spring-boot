@@ -33,11 +33,11 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "id_sender")
-    private User sender;
+    private UserE sender;
 
    @ManyToOne
     @JoinColumn(name = "id_reciever")
-    private User receiver;
+    private UserE receiver;
 
     @Override
     public boolean equals(Object o) {

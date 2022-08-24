@@ -20,7 +20,7 @@ import java.util.Objects;
 @ToString
 @AllArgsConstructor @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "client_id")
-public class Client extends User{
+public class Client extends UserE {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

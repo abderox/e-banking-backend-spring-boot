@@ -1,7 +1,6 @@
 package com.adria.projetbackend.models;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +15,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @AllArgsConstructor @NoArgsConstructor
-public class Banquier extends User{
+public class Banquier extends UserE {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_banquier")

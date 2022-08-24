@@ -1,13 +1,12 @@
 package com.adria.projetbackend;
 
-import com.adria.projetbackend.models.Client;
+import com.adria.projetbackend.models.UserE;
 import com.adria.projetbackend.repositories.AddressRepository;
 import com.adria.projetbackend.repositories.AgenceRepository;
 import com.adria.projetbackend.repositories.BanqueRepository;
 import com.adria.projetbackend.services.AgenceService;
 import com.adria.projetbackend.repositories.ClientRepository;
-import com.adria.projetbackend.repositories.UserRepository;
-import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
+import com.adria.projetbackend.services.User.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +29,7 @@ class ProjetBackendApplicationTests {
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Test
     void contextLoads() throws ParseException {
@@ -57,6 +56,8 @@ class ProjetBackendApplicationTests {
 //        System.out.println(UtilsMethods.generateClientId("0011","495","36") );
 //        System.out.println(UtilsMethods.generateClientId("0011","320","36") );
 //
+        UserE user = userService.findByUsername("banquier3");
+        System.out.println(user.getUsername());
 
 
 
