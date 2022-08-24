@@ -34,6 +34,15 @@ public class ApplicationSecurity {
 
         http.authorizeRequests((authorize) -> authorize
                 .antMatchers(SecurityAuthConstants.ANY_URL_V1).permitAll( )
+                .antMatchers(
+                        "/v2/api-docs/**",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/webjars/**").permitAll()
                 .anyRequest( ).authenticated( )
         );
 

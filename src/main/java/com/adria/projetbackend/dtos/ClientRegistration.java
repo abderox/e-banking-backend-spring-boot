@@ -3,6 +3,9 @@ package com.adria.projetbackend.dtos;
 import com.adria.projetbackend.utils.enums.TypePieceID;
 import com.adria.projetbackend.utils.enums.TypeSituationFam;
 import com.adria.projetbackend.utils.enums.TypeStatus;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
@@ -13,6 +16,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientRegistration {
 
     private String username;
