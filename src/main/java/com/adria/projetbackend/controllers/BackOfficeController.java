@@ -24,11 +24,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -38,8 +41,8 @@ import java.util.Set;
 
 @RestController
 @Api(tags = "Add-new-CLient")
-@RequestMapping(SecurityAuthConstants.API_URL_V1)
-public class UserAuthController {
+@RequestMapping(SecurityAuthConstants.API_URL_V2)
+public class BackOfficeController {
 
     @Autowired
     private IUserService userService;
@@ -65,6 +68,7 @@ public class UserAuthController {
     @Autowired
     IBackOfficeServices backOfficeService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(SecurityAuthConstants.SIGN_UP_URL_CLIENT)
     @ApiOperation(value = "This method is used to register a new client")
     public ResponseEntity<UserE> registerUser(@Valid ClientRegistration clientRegistration) throws ParseException {
@@ -72,6 +76,21 @@ public class UserAuthController {
         return new ResponseEntity<>(backOfficeService.ajouterNouveauClient(clientRegistration), HttpStatus.OK);
 
     }
+
+    @PreAuthorize("hasAuthority('ROLE_SUPER_ADMIN')")
+    @GetMapping("/getAllClients")
+    @ApiOperation(value = "This method is used to get all clients")
+    public ResponseEntity<List<Client>> getAllClients() {
+        return new ResponseEntity<>(backOfficeService.consulterTousClients(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/getAll")
+    @ApiOperation(value = "This method is used to get all clients")
+    public ResponseEntity<List<Client>> getAll() {
+        return new ResponseEntity<>(backOfficeService.consulterTousClients(), HttpStatus.OK);
+    }
+
 
 
 

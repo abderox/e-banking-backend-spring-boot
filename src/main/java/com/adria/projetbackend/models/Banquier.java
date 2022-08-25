@@ -9,6 +9,9 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+@Table(name = "Banquier", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_banquier", columnNames = {"identifiantBanquier"})
+})
 @Entity
 @PrimaryKeyJoinColumn(name = "banquier_id")
 @Getter

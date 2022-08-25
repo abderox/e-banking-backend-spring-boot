@@ -12,7 +12,7 @@ public interface IBackOfficeServices {
     boolean usernameExists(String username);
     boolean idExists(Long id);
     boolean identifiantClientExists(String identifiantClient);
-    List<Client> ConsulterTousClients();
+    List<Client> consulterTousClients();
     void supprimerClient(String clientIdentity);
     Client modifierClient(Client client);
     Client consulterClientByEmail(String email);

@@ -40,8 +40,6 @@ public class ClientRegistration {
     private String rue;
 
     @NotBlank
-    private String identifiantClient;
-
     private String numPieceIdentiteClient;
 
     @NotBlank
@@ -57,10 +55,6 @@ public class ClientRegistration {
     private String statusProfile;
 
     private String codeAgence;
-
-    private String villeAddress;
-
-    private String regionAddress;
 
     @NotBlank
     private String provincAddress;

@@ -5,6 +5,8 @@ public class SecurityAuthConstants {
 
     public static final String API_URL_V1 = "/api/v1";
     public static final String ANY_URL_V1 = API_URL_V1 + "/**";
+    public static final String API_URL_V2 = "/api/v2";
+    public static final String ANY_URL_V2 = API_URL_V2 + "/**";
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
     public static final String SIGN_UP_URL = "/auth/sign-up";

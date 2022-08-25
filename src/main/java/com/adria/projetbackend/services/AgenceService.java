@@ -1,5 +1,7 @@
 package com.adria.projetbackend.services;
 
+import com.adria.projetbackend.exceptions.runTimeExpClasses.CodeAgencyMustBeUnique;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
 import com.adria.projetbackend.models.Agence;
 import com.adria.projetbackend.models.Banquier;
 import com.adria.projetbackend.models.Client;
@@ -38,15 +40,26 @@ public class AgenceService {
     }
 
 
-    public Agence addAgence(Agence agence) {
+    public Agence addAgenceIfNotFound(Agence agence) {
         if ( !agenceExists(agence.getCode( )) ) {
             return agenceRepository.save(agence);
         }
         return getAgence(agence.getCode( ));
     }
 
+    public Agence addAgence(Agence agence) {
+        if ( !agenceExists(agence.getCode( )) ) {
+            return agenceRepository.save(agence);
+        }
+        throw new CodeAgencyMustBeUnique( "Agency code must be unique " );
+    }
+
     public Agence getAgence(String code) {
-        return agenceRepository.findByCode(code);
+        if ( agenceExists(code) ) {
+            return agenceRepository.findByCode(code);
+        }
+        throw new NoSuchCustomerException( "No such agency found" );
+
     }
 
     public boolean agenceExists(String code) {

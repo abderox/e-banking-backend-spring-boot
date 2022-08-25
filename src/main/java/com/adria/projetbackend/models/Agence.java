@@ -12,15 +12,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@Table(name = "Agence", uniqueConstraints = {
-        @UniqueConstraint(name = "uc_agence_code_email", columnNames = {"code", "email", "telephone"})
-})
 @Entity
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Agence", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_agence_code_email", columnNames = {"code", "email", "telephone"})
+
+})
 public class Agence {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

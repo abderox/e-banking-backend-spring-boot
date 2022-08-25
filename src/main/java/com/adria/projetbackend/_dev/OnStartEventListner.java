@@ -157,11 +157,11 @@ public class OnStartEventListner {
 
         // ? assign agences to banque
 
-        Agence ag1 = agenceService.addAgence(agence);
-        Agence ag2 = agenceService.addAgence(agence2);
-        Agence ag3 = agenceService.addAgence(agence3);
-        Agence ag4 = agenceService.addAgence(agence4);
-        Agence ag5 = agenceService.addAgence(agence5);
+        Agence ag1 = agenceService.addAgenceIfNotFound(agence);
+        Agence ag2 = agenceService.addAgenceIfNotFound(agence2);
+        Agence ag3 = agenceService.addAgenceIfNotFound(agence3);
+        Agence ag4 = agenceService.addAgenceIfNotFound(agence4);
+        Agence ag5 = agenceService.addAgenceIfNotFound(agence5);
 
 
         bankService.addBank(banque);
@@ -280,18 +280,18 @@ public class OnStartEventListner {
 
         logger.info("Initializing database...");
         logger.info("Created Bankers");
-        logger.info("****************************************************************************************");
+        logger.info("* * * * * * * * * * * * * * * * * * * * * * * * * * * ");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
-        logger.info("*\t" + banquier.getEmail( ) + " banquier \t*");
-        logger.info("*\t" + banquier3.getEmail( ) + "  banquier3 \t*");
-        logger.info("*\t" + banquier2.getEmail( ) + "  banquier2 \t*");
-        logger.info("*\t" + banquier4.getEmail( ) + "  banquier4 \t*");
+        logger.info("*\t" + banquier.getEmail( ) + " banquier \t\t\t\t*");
+        logger.info("*\t" + banquier3.getEmail( ) + "  banquier3 \t \t\t\t*");
+        logger.info("*\t" + banquier2.getEmail( ) + "  banquier2 \t \t\t\t*");
+        logger.info("*\t" + banquier4.getEmail( ) + "  banquier4 \t \t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
-        logger.info("****************************************************************************************");
+        logger.info("* * * * * * * * * * * * * * * * * * * * * * * * * * * ");
         alreadySetup = true;
 
 

@@ -19,6 +19,9 @@ import java.util.Objects;
 @Setter
 @ToString
 @AllArgsConstructor @NoArgsConstructor
+@Table(name = "Client", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_client_numpieceidentite", columnNames = {"numPieceIdentite","identifiantClient"})
+})
 @PrimaryKeyJoinColumn(name = "client_id")
 public class Client extends UserE {
 

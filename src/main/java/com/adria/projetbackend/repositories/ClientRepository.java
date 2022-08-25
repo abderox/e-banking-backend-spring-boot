@@ -31,4 +31,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Client findTopByOrderByIdDesc();
 
+    boolean existsClientByTelephone(String telephone);
+
+    boolean existsByNumPieceIdentite(String numPieceIdentite);
 }

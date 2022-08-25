@@ -17,17 +17,21 @@ public class ApiError  {
 
 
     private final HttpStatus status;
+    private int code ;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private final LocalDateTime timestamp;
     private  String message;
-    private String debugMsg;
+    private String debugMsg="";
+
+
 
 
 
     public ApiError(HttpStatus status, String message , Throwable throwable) {
         timestamp = LocalDateTime.now();
         this.status = status;
+        this.code = status.value();
         this.message = message;
         this.debugMsg = throwable.getLocalizedMessage();
     }
@@ -35,6 +39,7 @@ public class ApiError  {
     public ApiError(HttpStatus status, String message ) {
         timestamp = LocalDateTime.now();
         this.status = status;
+        this.code = status.value();
         this.message = message;
     }
 
