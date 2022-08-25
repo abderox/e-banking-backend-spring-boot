@@ -37,6 +37,8 @@ public class Client extends UserE {
     private TypeSituationFam situationFamilial;
 
     private String metier;
+
+    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateNaissance;
 

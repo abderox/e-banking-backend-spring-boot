@@ -23,4 +23,11 @@ public class UtilsMethods {
         SimpleDateFormat f2 = new SimpleDateFormat("yyyy-MM-dd");
         return f2.parse(year + "-" + month + "-" + day);
     }
+
+    public static Date stringToDate(String date) throws ParseException {
+        SimpleDateFormat f2 = new SimpleDateFormat("yyyy-MM-dd");
+        return f2.parse(date);
+    }
+
+
 }

@@ -3,9 +3,7 @@ package com.adria.projetbackend.dtos;
 import com.adria.projetbackend.utils.enums.TypePieceID;
 import com.adria.projetbackend.utils.enums.TypeSituationFam;
 import com.adria.projetbackend.utils.enums.TypeStatus;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
@@ -16,7 +14,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientRegistration {
@@ -44,15 +44,17 @@ public class ClientRegistration {
 
     private String numPieceIdentiteClient;
 
-    private String typePieceIDClient;
+    @NotBlank
+    private String typepiece;
 
-    private String situationFamilialClient;
+    private String familystatus;
 
     private String metierClient;
 
-    private Date dateNaissanceClient;
+    @NotBlank
+    private String date_birth;
 
-    private String statusClient;
+    private String statusProfile;
 
     private String codeAgence;
 
@@ -60,6 +62,7 @@ public class ClientRegistration {
 
     private String regionAddress;
 
+    @NotBlank
     private String provincAddress;
 
     private String[] roles;

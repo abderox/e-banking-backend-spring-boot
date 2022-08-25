@@ -19,11 +19,11 @@ public class AddressService {
         return addressRepository.findByProvinceContains(address.getProvince( ));
     }
 
-    public Address getAddress(String code){
-        return addressRepository.findByProvinceContains(code);
+    public Address getAddress(String province){
+        return addressRepository.findByProvinceContains(province);
     }
 
-    public boolean addressExists(String code){
-        return addressRepository.existsByProvinceContains(code);
+    public boolean addressExists(String province){
+        return addressRepository.existsByProvinceContains(province);
     }
 }

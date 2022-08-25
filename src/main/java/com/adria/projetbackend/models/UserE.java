@@ -61,6 +61,7 @@ public abstract class UserE {
     @JoinColumn(name = "address_id" )
     private Address address;
 
+    @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
     @JoinTable(
             name = "user_roles",

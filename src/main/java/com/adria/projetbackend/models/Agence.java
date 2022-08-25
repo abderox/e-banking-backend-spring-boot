@@ -43,6 +43,7 @@ public class Agence {
     private Banque banque;
 
     @ToString.Exclude
+    @JsonBackReference
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Client> clients = new ArrayList<>( );
 

@@ -20,4 +20,9 @@ public class Address {
     @Column( length = 40)
     private String province;
 
+    public Address(String provincAddress ,String villeAddress ,String regionAddress) {
+        this.region = regionAddress;
+        this.ville = villeAddress;
+        this.province = provincAddress;
+    }
 }

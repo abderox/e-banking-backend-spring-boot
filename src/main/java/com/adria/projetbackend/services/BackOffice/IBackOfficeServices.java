@@ -1,7 +1,9 @@
 package com.adria.projetbackend.services.BackOffice;
 
+import com.adria.projetbackend.dtos.ClientRegistration;
 import com.adria.projetbackend.models.Client;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface IBackOfficeServices {
@@ -16,7 +18,7 @@ public interface IBackOfficeServices {
     Client consulterClientByEmail(String email);
     Client consulterClientByUsername(String username);
     Client consulterClientById(Long id);
-    Client ajouterNouveauClient(Client client);
+    Client ajouterNouveauClient(ClientRegistration clientRegistration) throws ParseException;
     public Client consulterClientByIdentifiant(String clientIdentity);
 
 }

@@ -249,6 +249,7 @@ public class OnStartEventListner {
         banquier3.setAddress(add2);
         banquier3.setAgence(ag2);
 
+
         banquierService.registerBanquier(banquier);
         banquierService.registerBanquier(banquier3);
         banquierService.registerBanquier(banquier2);
@@ -276,21 +277,23 @@ public class OnStartEventListner {
 
 
 
-        alreadySetup = true;
+
         logger.info("Initializing database...");
         logger.info("Created Bankers");
         logger.info("****************************************************************************************");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
-        logger.info("*\t" + banquier.getEmail( ) + "  " + banquier.getPassword( ) + "\t*");
-        logger.info("*\t" + banquier3.getEmail( ) + "  " + banquier3.getPassword( ) + "\t*");
-        logger.info("*\t" + banquier2.getEmail( ) + "  " + banquier2.getPassword( ) + "\t*");
-        logger.info("*\t" + banquier4.getEmail( ) + "  " + banquier4.getPassword( ) + "\t*");
+        logger.info("*\t" + banquier.getEmail( ) + " banquier \t*");
+        logger.info("*\t" + banquier3.getEmail( ) + "  banquier3 \t*");
+        logger.info("*\t" + banquier2.getEmail( ) + "  banquier2 \t*");
+        logger.info("*\t" + banquier4.getEmail( ) + "  banquier4 \t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("*\t\t\t\t\t\t\t*");
         logger.info("****************************************************************************************");
+        alreadySetup = true;
+
 
     }
 
