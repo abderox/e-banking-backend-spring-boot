@@ -4,11 +4,13 @@ package com.adria.projetbackend.services.User;
 import com.adria.projetbackend.models.UserE;
 import com.adria.projetbackend.repositories.UserRepository;
 import com.adria.projetbackend.utils.constants.SecurityAuthConstants;
+import com.adria.projetbackend.utils.storage.RedisRepository;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,6 +31,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    RedisRepository redisRepository;
 
 
     public UserE findByUsername(String username) {
@@ -93,5 +98,19 @@ public class UserService implements IUserService {
     @Override
     public UserE findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+
+    public boolean isUserFullyAuthorized()
+    {
+        String username ="";
+        if ( SecurityContextHolder.getContext().getAuthentication()==null ) return false;
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String credentials = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
+        boolean isFoundToken =redisRepository.isFoundToken(credentials);
+
+        if ( isFoundToken )  username = redisRepository.findToken(credentials).getUsername();
+        if(username  == null || username.equals("")) return false ;
+        return username.equals(userDetails.getUsername());
     }
 }

@@ -7,6 +7,7 @@ import com.adria.projetbackend.models.UserE;
 import com.adria.projetbackend.services.User.IUserService;
 import com.adria.projetbackend.services.User.UserDetailsImpl;
 import com.adria.projetbackend.utils.enums.RolesE;
+import com.adria.projetbackend.utils.storage.RedisRepository;
 import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,8 @@ public class JwtTokenClientFilter extends OncePerRequestFilter {
     @Autowired
     IUserService userService;
 
+    @Autowired
+    RedisRepository redisRepository;
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
@@ -46,12 +49,14 @@ public class JwtTokenClientFilter extends OncePerRequestFilter {
 
         String token = getAccessToken(request);
         if ( !userService.validateToken(token) ) {
+            redisRepository.delete(token);
             filterChain.doFilter(request, response);
             return;
         }
 
 
         setAuthenticationCoontext(request, token);
+        System.out.println("end filter : "+token);
         filterChain.doFilter(request, response);
 
     }
@@ -59,25 +64,36 @@ public class JwtTokenClientFilter extends OncePerRequestFilter {
     private void setAuthenticationCoontext(HttpServletRequest request, String token) throws IOException {
         System.out.println("setAuthenticationCoontext");
         UserDetailsImpl userDetails = getUserDetails(token);
+        System.out.println("userDetails : "+userDetails.getAuthorities());
         logger.debug("userDetails : {}", userDetails);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities( ));
         authentication.setDetails(new WebAuthenticationDetailsSource( ).buildDetails(request));
-        System.out.println("authentication : " + authentication.getPrincipal( ).toString( ));
+        System.out.println("authentication : " + authentication.getAuthorities());
         SecurityContextHolder.getContext( ).setAuthentication(authentication);
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities() );
+
     }
 
     private UserDetailsImpl getUserDetails(String token) throws IOException {
         logger.debug("token : {}", token);
-        UserE user = new Banquier(  );
+        UserE user;
         Set<String> roles = userService.getAuthorities(token);
-        if ( roles.contains(RolesE.ROLE_ADMIN) ) {
+//        if ( roles.contains("ROLE_ADMIN") ) {
+//            System.out.println( "here banquier");
+//            user = new Banquier( );
+//        } else {
+//            user = new Client( );
+//            System.out.println( "here client");
+//
+//        }
+        String[] splitSuubject = userService.getDetailsFromSubject(token).split(",");
+
+        if(splitSuubject[1].contains("banq")){
             user = new Banquier( );
-        } else {
+        }else{
             user = new Client( );
         }
 
-
-        String[] splitSuubject = userService.getDetailsFromSubject(token).split(",");
         user.setId(Long.parseLong(splitSuubject[0]));
         user.setEmail(splitSuubject[1]);
         return new UserDetailsImpl(true, user, new ArrayList<>( ), roles);

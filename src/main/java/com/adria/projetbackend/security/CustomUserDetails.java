@@ -36,7 +36,7 @@ public class CustomUserDetails implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserE user = userService.findUserByEmail(email);
         if ( user == null ) {
-            // ! no need for this here
+
             throw new UsernameNotFoundException("No user found with email: " + email);
 
         }
@@ -49,6 +49,7 @@ public class CustomUserDetails implements UserDetailsService {
     private Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {
         logger.debug("authorities : {}", roles);
+        System.out.println("ROLES CUSTOM"+roles);
         return getGrantedAuthorities(roles);
     }
 
@@ -57,6 +58,7 @@ public class CustomUserDetails implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>( );
         for (Role role : roles) {
             logger.debug("role : {}", role);
+            System.out.println("role CUSTOM" + role);
             authorities.add(new SimpleGrantedAuthority(role.getName( ).name( )));
         }
         return authorities;

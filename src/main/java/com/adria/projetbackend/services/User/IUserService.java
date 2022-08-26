@@ -14,5 +14,6 @@ public interface IUserService {
     Claims parseClaims(String token);
     Set<String> getAuthorities(String token) throws IOException;
     UserE findUserByEmail(String email);
+    boolean isUserFullyAuthorized();
 
 }
