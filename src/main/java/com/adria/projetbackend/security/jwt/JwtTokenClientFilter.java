@@ -41,6 +41,11 @@ public class JwtTokenClientFilter extends OncePerRequestFilter {
 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+//        response.setHeader("Access-Control-Allow-Methods", "*");
+//        response.setHeader("Access-Control-Allow-Headers", "*");
+//        response.setHeader("Accept","*/*");
+
 
         if ( !hasAuthorizationBearer(request) ) {
             filterChain.doFilter(request, response);

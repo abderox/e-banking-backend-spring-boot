@@ -23,60 +23,30 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @RestController
-@Api(tags = "Banquier-auth")
-@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:8081" })
-@RequestMapping(SecurityAuthConstants.API_URL_V1)
-public class BanquierAuthController {
-
-    @Autowired
-    private IUserService userService;
-
-    @Autowired
-    RoleService roleService;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    IBackOfficeServices backOfficeService;
+@Api(tags = "logout-auth")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping(SecurityAuthConstants.API_URL_V2)
+public class AuthRequiresAuth {
 
     @Autowired
     RedisRepository redisRepository;
 
 
-    @PostMapping(SecurityAuthConstants.SIGN_IN_URL_ADMIN)
-    @ApiOperation(value = "This method is used to register a new client")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
-
-        try {
-
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail( ),
-                            loginRequest.getPassword( )
-                    )
-
-            );
-
-            UserDetailsImpl myUserDetails = (UserDetailsImpl) authentication.getPrincipal( );
-            String accessToken = userService.genAccessToken(myUserDetails.getUser( ));
-            LoginResponse userJwt = new LoginResponse(myUserDetails.getUsername( ), accessToken);
-            redisRepository.add(new JwtToken(accessToken, myUserDetails.getUsername( )));
-            return new ResponseEntity<>(userJwt, HttpStatus.OK);
-
-        } catch (BadCredentialsException e) {
-            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage( )), HttpStatus.UNAUTHORIZED);
-        }
-
-    }
 
     @GetMapping(SecurityAuthConstants.SIGN_OUT_URL_ADMIN)
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<?> logoutAdmin() {
         String accessToken = (String) SecurityContextHolder.getContext( ).getAuthentication( ).getCredentials( );
+        redisRepository.delete(accessToken);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "This method is used to logout a client")
+    @GetMapping(SecurityAuthConstants.SIGN_OUT_URL_CLIENT)
+    public ResponseEntity<?> logoutClient() {
+        String  accessToken = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         redisRepository.delete(accessToken);
         return new ResponseEntity<>(HttpStatus.OK);
     }
