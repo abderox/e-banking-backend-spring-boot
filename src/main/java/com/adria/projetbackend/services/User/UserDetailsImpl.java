@@ -95,4 +95,11 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
 }

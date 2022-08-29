@@ -1,13 +1,11 @@
 package com.adria.projetbackend.security;
 
-import com.adria.projetbackend.security.jwt.JwtTokenClientFilter;
+import com.adria.projetbackend.security.jwt.JwtTokenFilter;
 import com.adria.projetbackend.utils.constants.SecurityAuthConstants;
 import com.adria.projetbackend.utils.enums.RolesE;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,7 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(
@@ -41,7 +38,7 @@ public class ApplicationSecurity {
     CustomUserDetails userDetailsService;
 
     @Autowired
-    JwtTokenClientFilter jwtTokenFilter;
+    JwtTokenFilter jwtTokenFilter;
 
 
 

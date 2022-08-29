@@ -1,14 +1,11 @@
 package com.adria.projetbackend.security.jwt;
 
-import com.adria.projetbackend._dev.OnStartEventListner;
 import com.adria.projetbackend.models.Banquier;
 import com.adria.projetbackend.models.Client;
 import com.adria.projetbackend.models.UserE;
 import com.adria.projetbackend.services.User.IUserService;
 import com.adria.projetbackend.services.User.UserDetailsImpl;
-import com.adria.projetbackend.utils.enums.RolesE;
 import com.adria.projetbackend.utils.storage.RedisRepository;
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +26,9 @@ import java.util.Set;
 
 
 @Component
-public class JwtTokenClientFilter extends OncePerRequestFilter {
+public class JwtTokenFilter extends OncePerRequestFilter {
 
-    Logger logger = LoggerFactory.getLogger(JwtTokenClientFilter.class);
+    Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
 
     @Autowired
     IUserService userService;

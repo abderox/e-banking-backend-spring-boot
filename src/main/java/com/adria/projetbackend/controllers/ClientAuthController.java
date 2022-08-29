@@ -1,6 +1,8 @@
 package com.adria.projetbackend.controllers;
 
 
+import com.adria.projetbackend.dtos.BanquierDetailsDto;
+import com.adria.projetbackend.dtos.ClientDetailsDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.security.jwt.LoginRequest;
 import com.adria.projetbackend.security.jwt.LoginResponse;
@@ -62,8 +64,13 @@ public class ClientAuthController {
 
             UserDetailsImpl myUserDetails = (UserDetailsImpl) authentication.getPrincipal( );
             String accessToken = userService.genAccessToken(myUserDetails.getUser( ));
+
+            ClientDetailsDto clientInfo = clientService.getClientDto(myUserDetails.getUser( ).getId( ));
+            clientInfo.setEmailUser(myUserDetails.getUsername( ));
+            clientInfo.setAccessToken(accessToken);
+
             LoginResponse userJwt = new LoginResponse(myUserDetails.getUsername( ), accessToken);
-            return new ResponseEntity<>(userJwt, HttpStatus.OK);
+            return new ResponseEntity<>(clientInfo, HttpStatus.OK);
 
         } catch (BadCredentialsException e) {
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage( )), HttpStatus.UNAUTHORIZED);

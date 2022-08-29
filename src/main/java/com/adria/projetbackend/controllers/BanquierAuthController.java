@@ -1,10 +1,12 @@
 package com.adria.projetbackend.controllers;
 
 
+import com.adria.projetbackend.dtos.BanquierDetailsDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.security.jwt.LoginRequest;
 import com.adria.projetbackend.security.jwt.LoginResponse;
 import com.adria.projetbackend.services.BackOffice.IBackOfficeServices;
+import com.adria.projetbackend.services.Banquier.IBanquierService;
 import com.adria.projetbackend.services.RoleService;
 import com.adria.projetbackend.services.User.IUserService;
 import com.adria.projetbackend.services.User.UserDetailsImpl;
@@ -20,15 +22,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @Api(tags = "Banquier-auth")
-@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:8081" })
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8081"})
 @RequestMapping(SecurityAuthConstants.API_URL_V1)
 public class BanquierAuthController {
 
@@ -42,10 +47,10 @@ public class BanquierAuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    IBackOfficeServices backOfficeService;
+    RedisRepository redisRepository;
 
     @Autowired
-    RedisRepository redisRepository;
+    IBanquierService banquierService;
 
 
     @PostMapping(SecurityAuthConstants.SIGN_IN_URL_ADMIN)
@@ -59,14 +64,17 @@ public class BanquierAuthController {
                             loginRequest.getEmail( ),
                             loginRequest.getPassword( )
                     )
-
             );
 
             UserDetailsImpl myUserDetails = (UserDetailsImpl) authentication.getPrincipal( );
             String accessToken = userService.genAccessToken(myUserDetails.getUser( ));
-            LoginResponse userJwt = new LoginResponse(myUserDetails.getUsername( ), accessToken);
+
+            BanquierDetailsDto banquierInfo = banquierService.getBanquierDto(myUserDetails.getUser( ).getId( ));
+            banquierInfo.setEmailUser(myUserDetails.getUsername( ));
+            banquierInfo.setAccessToken(accessToken);
+
             redisRepository.add(new JwtToken(accessToken, myUserDetails.getUsername( )));
-            return new ResponseEntity<>(userJwt, HttpStatus.OK);
+            return new ResponseEntity<>(banquierInfo, HttpStatus.OK);
 
         } catch (BadCredentialsException e) {
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage( )), HttpStatus.UNAUTHORIZED);
@@ -79,6 +87,17 @@ public class BanquierAuthController {
         String accessToken = (String) SecurityContextHolder.getContext( ).getAuthentication( ).getCredentials( );
         redisRepository.delete(accessToken);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(SecurityAuthConstants.GET_BANKER_INFO)
+    public ResponseEntity<?> getBanquierInfo() {
+        UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+        BanquierDetailsDto banquierInfo = banquierService.getBanquierDto(myUserDetails.getUser( ).getId( ));
+//        banquierInfo.setEmailUser(myUserDetails.getUser().getEmail());
+//        banquierInfo.setAccessToken(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
+        banquierInfo.setRoles(myUserDetails.getRoles( ).toArray(new String[myUserDetails.getRoles( ).size( )]));
+
+        return new ResponseEntity<>(banquierInfo, HttpStatus.OK);
     }
 
 
