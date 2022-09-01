@@ -41,6 +41,13 @@ public class BanqierService implements IBanquierService {
             throw new NoSuchBanquierException("Banquier with that identity is not found");
     }
 
+    public Banquier getBanquier(Long id){
+        if ( banquierExistsById(id) )
+            return banquierRepository.findById(id).get();
+        else
+            throw new NoSuchBanquierException("Banquier with that identity is not found");
+    }
+
     public BanquierDetailsDto getBanquierDto(Long id) {
         if ( banquierExistsById(id) )
         {
@@ -49,6 +56,7 @@ public class BanqierService implements IBanquierService {
             banquier.getRoles().forEach(role -> authorities.add(role.getName().toString()));
             BanquierDetailsDto banquierDto = convertToDto(banquier);
             banquierDto.setRoles(authorities.toArray(new String[authorities.size()]));
+            banquierDto.setBankName(banquier.getAgence().getBanque().getRaisonSociale());
             return banquierDto;
         }
 

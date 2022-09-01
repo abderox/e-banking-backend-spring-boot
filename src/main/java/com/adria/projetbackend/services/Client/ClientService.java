@@ -28,12 +28,13 @@ public class ClientService implements IClientServices {
     public ClientDetailsDto getClientDto(Long id) {
         if ( idExists(id) )
         {
-            Client banquier = clientRepository.findById(id).get();
+            Client client = clientRepository.findById(id).get();
             List<String> authorities = new ArrayList<>();
-            banquier.getRoles().forEach(role -> authorities.add(role.getName().toString()));
-            ClientDetailsDto banquierDto = convertToDto(banquier);
-            banquierDto.setRoles(authorities.toArray(new String[authorities.size()]));
-            return banquierDto;
+            client.getRoles().forEach(role -> authorities.add(role.getName().toString()));
+            ClientDetailsDto clientDto = convertToDto(client);
+            clientDto.setRoles(authorities.toArray(new String[authorities.size()]));
+            clientDto.setBankName(client.getAgence().getBanque().getRaisonSociale());
+            return clientDto;
         }
 
         else

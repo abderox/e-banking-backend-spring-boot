@@ -13,10 +13,11 @@ public class ClientDetailsDto {
     private String[] roles;
     private Long id;
     private String identifiantClient;
-    private String nom;
-    private String prenom;
+    private String lastName;
+    private String firstName;
     private String username;
     private String emailUser;
     private String accessToken;
+    private String bankName;
 
 }

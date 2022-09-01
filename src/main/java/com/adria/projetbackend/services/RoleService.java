@@ -50,7 +50,7 @@ public class RoleService {
                 }
             }
         } else {
-            rolesList.add(getRole(RolesE.ROLE_USER));
+            rolesList.add(getRole(RolesE.ROLE_CLIENT));
         }
 
         return new HashSet<>(rolesList);

@@ -4,6 +4,7 @@ package com.adria.projetbackend.exceptions.controllerAdvices;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.CodeAgencyMustBeUnique;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.CustmerAlreadyExistsException;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchAgenceException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class AgencyHandlingExp {
 
     @ExceptionHandler(value
-            = NoSuchCustomerException.class)
+            = NoSuchAgenceException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ApiError handleException(NoSuchCustomerException ex)
+    public ApiError handleException(NoSuchAgenceException ex)
     {
         return new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
 

@@ -2,11 +2,14 @@ package com.adria.projetbackend.controllers;
 
 
 import com.adria.projetbackend.dtos.BanquierDetailsDto;
+import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.security.jwt.LoginRequest;
 import com.adria.projetbackend.security.jwt.LoginResponse;
 import com.adria.projetbackend.services.BackOffice.IBackOfficeServices;
 import com.adria.projetbackend.services.Banquier.IBanquierService;
+import com.adria.projetbackend.services.Email.EmailDetails;
+import com.adria.projetbackend.services.Email.EmailService;
 import com.adria.projetbackend.services.RoleService;
 import com.adria.projetbackend.services.User.IUserService;
 import com.adria.projetbackend.services.User.UserDetailsImpl;
@@ -51,6 +54,11 @@ public class BanquierAuthController {
 
     @Autowired
     IBanquierService banquierService;
+
+    @Autowired
+    IBackOfficeServices backOfficeService;
+
+
 
 
     @PostMapping(SecurityAuthConstants.SIGN_IN_URL_ADMIN)
@@ -99,6 +107,15 @@ public class BanquierAuthController {
 
         return new ResponseEntity<>(banquierInfo, HttpStatus.OK);
     }
+
+    @GetMapping("/add-client-account")
+    public ResponseEntity<?> addClientAccount(NewCompteDto newCompteDto) {
+
+        return new ResponseEntity<>(backOfficeService.ajouterNouveauCompte(newCompteDto), HttpStatus.OK);
+
+    }
+
+
 
 
 }

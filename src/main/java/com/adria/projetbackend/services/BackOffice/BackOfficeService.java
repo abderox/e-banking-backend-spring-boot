@@ -2,20 +2,28 @@ package com.adria.projetbackend.services.BackOffice;
 
 
 import com.adria.projetbackend.dtos.ClientRegistration;
+import com.adria.projetbackend.dtos.ClientsDto;
+import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.CustmerAlreadyExistsException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
 import com.adria.projetbackend.models.Address;
 import com.adria.projetbackend.models.Client;
+import com.adria.projetbackend.models.Compte;
 import com.adria.projetbackend.repositories.ClientRepository;
+import com.adria.projetbackend.repositories.CompteRepository;
 import com.adria.projetbackend.services.AddressService;
 import com.adria.projetbackend.services.AgenceService;
 import com.adria.projetbackend.services.Client.IClientServices;
+import com.adria.projetbackend.services.Compte.ICompteService;
+import com.adria.projetbackend.services.Email.EmailDetails;
+import com.adria.projetbackend.services.Email.EmailService;
 import com.adria.projetbackend.services.RoleService;
 import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import com.adria.projetbackend.utils.enums.TypePieceID;
 import com.adria.projetbackend.utils.enums.TypeSituationFam;
 import com.adria.projetbackend.utils.enums.TypeStatus;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,35 +55,41 @@ public class BackOfficeService implements IBackOfficeServices {
     IClientServices clientService;
 
     @Autowired
+    ICompteService compteService;
+
+    @Autowired
     AddressService addressService;
 
     @Autowired
     RoleService roleService;
 
+    @Autowired
+    private EmailService emailService;
+
 
     @Transactional
-    public Client ajouterNouveauClient(ClientRegistration clientRegistration) throws ParseException {
+    public ClientRegistration ajouterNouveauClient(ClientRegistration clientRegistration) throws ParseException {
 
         Client client = convertToModel(clientRegistration);
 
         if ( emailExists(client.getEmail( )) ||
-            usernameExists(client.getUsername( )) ||
-            phoneExists(client.getTelephone( )) ||
-            idPiecesExists(client.getNumPieceIdentite()))
-        {
-            throw new CustmerAlreadyExistsException("Trying to save already existing info including : username/email/phoneNumber/identityPiece" );
+                usernameExists(client.getUsername( )) ||
+                phoneExists(client.getTelephone( )) ||
+                idPiecesExists(client.getNumPieceIdentite( )) ) {
+            throw new CustmerAlreadyExistsException("Trying to save already existing info including : username/email/phoneNumber/identityPiece");
         }
 
 
-        client.setTypePieceID(TypePieceID.getTypePieceID(clientRegistration.getTypepiece()));
+        client.setTypePieceID(TypePieceID.getTypePieceID(clientRegistration.getTypepiece( )));
         client.setRoles(roleService.stringToEntityRoles(clientRegistration.getRoles( )));
         client.setAgence(agenceService.getAgence(clientRegistration.getCodeAgence( )));
         client.setStatus(TypeStatus.getStatus(clientRegistration.getStatusProfile( )));
-        client.setDateNaissance(UtilsMethods.stringToDate(clientRegistration.getDate_birth()));
-        client.setSituationFamilial(TypeSituationFam.getTypeSituationFam(clientRegistration.getFamilystatus()));
+        client.setDateNaissance(UtilsMethods.stringToDate(clientRegistration.getDate_birth( )));
+        client.setSituationFamilial(TypeSituationFam.getTypeSituationFam(clientRegistration.getFamilystatus( )));
+        client.setUsername(clientRegistration.getEmail( ).split("@")[0]);
 
         client.setAddress(addressService.save(new Address(
-                clientRegistration.getProvincAddress( ) )));
+                clientRegistration.getProvincAddress( ), clientRegistration.getVilleAddress( ), clientRegistration.getRegionAddress( ))));
 
 
         Long lastIdInDb = clientRepository.findTopByOrderByIdDesc( ) != null ? clientRepository.findTopByOrderByIdDesc( ).getId( ) : 0;
@@ -84,9 +98,19 @@ public class BackOfficeService implements IBackOfficeServices {
                 (lastIdInDb + 1) + "",
                 client.getAgence( ).getBanque( ).getId( ).toString( )));
 
-        client.setPassword(passwordEncoder.encode(client.getPassword( )));
+        String temporaryPassword = UtilsMethods.generatePassword(10);
+        client.setPassword(passwordEncoder.encode(temporaryPassword));
+
+        clientRepository.save(client);
+        String bankName = client.getAgence( ).getBanque( ).getRaisonSociale( );
+        String status
+                = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ), "Welcome to Beta-" + bankName + " ,and Thank you for choosing us ! \nHere is a temporary password for your account : " + temporaryPassword + " \nYou must change it after you login.\nDISCLAIMER : YOUR CLIENT SPACE WILL NOT BE AVAILABLE UNLESS YOUR ACCOUNT IS ACTIVATED .\n\nBest regards , \n"+bankName,
+                "Welcome to Beta-" + bankName + " ," +
+                        " " + client.getUsername( ) + "!",
+                ""));
+
         LOGGER.debug(client.toString( ));
-        return clientRepository.save(client);
+        return clientRegistration;
 
     }
 
@@ -115,7 +139,6 @@ public class BackOfficeService implements IBackOfficeServices {
     }
 
 
-
     @Transactional(readOnly = true)
     public Client modifierClient(Client client) {
 
@@ -136,8 +159,12 @@ public class BackOfficeService implements IBackOfficeServices {
 
 
     @Transactional(readOnly = true)
-    public List<Client> consulterTousClients() {
-        return clientRepository.findAll( );
+    public List<ClientsDto> consulterTousClients(String agenceCode) {
+
+        List<Client> clients =  agenceService.getClientsOfAgence(agenceCode);
+        return modelMapper.map(clients, new TypeToken<List<ClientsDto>>() {
+        }.getType());
+
     }
 
     public Client consulterClientByIdentifiant(String clientIdentity) {
@@ -146,9 +173,29 @@ public class BackOfficeService implements IBackOfficeServices {
         } else throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
     }
 
+
+    @Transactional
+    public Compte ajouterNouveauCompte(NewCompteDto newCompteDto) {
+        Client client = consulterClientByIdentifiant(newCompteDto.getIdentifiantClient( ));
+        if(client==null){
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
+        }
+        Compte compte = convertToModel(newCompteDto);
+        compte.setClient(client);
+        Long lastIdInDb = compteService.getLatestRow();
+        compte.setRib(UtilsMethods.generateAccountNumber(
+                client.getAgence().getCode(),client.getId( ).toString()
+                ,client.getAgence().getBanque().getId( ).toString()
+                ,(lastIdInDb + 1) + ""));
+        client.setStatus(TypeStatus.getStatus(newCompteDto.getStatusClient()));
+        clientRepository.save(client);
+        return compteService.ajouterCompteV2(compte);
+    }
+
     public boolean identifiantClientExists(String identifiantClient) {
         return clientRepository.existsByIdentifiantClient(identifiantClient);
     }
+
 
     public boolean idExists(Long id) {
         return clientRepository.existsById(id);
@@ -172,6 +219,10 @@ public class BackOfficeService implements IBackOfficeServices {
 
     private Client convertToModel(ClientRegistration clientRegistration) {
         return modelMapper.map(clientRegistration, Client.class);
+    }
+
+    private Compte convertToModel(NewCompteDto newCompteDto) {
+        return modelMapper.map(newCompteDto, Compte.class);
     }
 
 

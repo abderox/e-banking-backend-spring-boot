@@ -2,6 +2,7 @@ package com.adria.projetbackend.repositories;
 
 import com.adria.projetbackend.models.Agence;
 import com.adria.projetbackend.models.Client;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     List<Client> findClientsByAgence_Id(Long agenceId);
 
-    List<Client> findClientsByAgence_Code(String agenceCode);
+    List<Client> findClientsByAgence_Code(String agenceCode, Sort sort);
 
     Client findByEmail(String email);
 

@@ -7,6 +7,7 @@ public interface IBanquierService {
 
     Banquier registerBanquier(Banquier banquier);
     Banquier getBanquier(String identifiant);
+    Banquier getBanquier(Long id);
     BanquierDetailsDto getBanquierDto(Long id);
     boolean banquierExists(String identifiant);
 

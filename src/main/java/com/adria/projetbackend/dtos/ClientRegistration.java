@@ -21,8 +21,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class ClientRegistration {
 
-    private String username;
-
     private String firstName;
 
     private String lastName;
@@ -31,8 +29,6 @@ public class ClientRegistration {
     @Email
     private String email;
 
-    @NotBlank
-    private String password;
 
     @NotBlank
     private String telephone;
@@ -42,7 +38,6 @@ public class ClientRegistration {
     @NotBlank
     private String numPieceIdentiteClient;
 
-    @NotBlank
     private String typepiece;
 
     private String familystatus;
@@ -58,6 +53,10 @@ public class ClientRegistration {
 
     @NotBlank
     private String provincAddress;
+
+    private String villeAddress;
+
+    private String regionAddress;
 
     private String[] roles;
 

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 
 @SpringBootTest
@@ -56,9 +57,10 @@ class ProjetBackendApplicationTests {
 //        System.out.println(UtilsMethods.generateClientId("0011","495","36") );
 //        System.out.println(UtilsMethods.generateClientId("0011","320","36") );
 //
-        UserE user = userService.findByUsername("banquier3");
-        System.out.println(user.getUsername());
-
+//        UserE user = userService.findByUsername("banquier3");
+//        System.out.println(user.getUsername());
+//        System.out.println(user.getPassword());
+//        System.out.println(generateAccountNumber("0011","36","1","340") );
 
 
     }

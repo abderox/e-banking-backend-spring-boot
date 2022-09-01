@@ -3,6 +3,7 @@ package com.adria.projetbackend.models;
 import com.adria.projetbackend.utils.enums.TypePieceID;
 import com.adria.projetbackend.utils.enums.TypeSituationFam;
 import com.adria.projetbackend.utils.enums.TypeStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -45,7 +46,7 @@ public class Client extends UserE {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateNaissance;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private TypeStatus status;
 
     @OneToMany(fetch = FetchType.EAGER , mappedBy = "client")
@@ -57,8 +58,9 @@ public class Client extends UserE {
     @JoinColumn(name = "agence_agence_id")
     private Agence agence;
 
-    @OneToMany(mappedBy = "client", orphanRemoval = true)
+    @JsonBackReference
     @ToString.Exclude
+    @OneToMany(mappedBy = "client", orphanRemoval = true)
     private List<Compte> comptes = new ArrayList<>( );
 
 

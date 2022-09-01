@@ -24,6 +24,16 @@ public class UtilsMethods {
         return codeAgence + uuid + ZERO + idClient + idBanque;
     }
 
+    public static String generateAccountNumber(String codeAgence, String idClient, String idBanque, String idCompte) {
+        int calc = idCompte.length( );
+        int calc2 = idClient.length( );
+        int calc3 = idBanque.length( );
+        int calc4 = codeAgence.length( );
+        System.out.println((24-(calc+calc2+calc3+calc4)));
+        String uuid =  String.format("%040d", new BigInteger(idCompte,16)).substring(0,(24-(calc+calc2+calc3+calc4)));
+        return codeAgence + uuid  +idCompte+ idClient + idBanque;
+    }
+
     public static Date chooseDate(int year, int month, int day) throws ParseException {
         SimpleDateFormat f2 = new SimpleDateFormat("yyyy-MM-dd");
         return f2.parse(year + "-" + month + "-" + day);
@@ -34,5 +44,27 @@ public class UtilsMethods {
         return f2.parse(date);
     }
 
+    public static String generatePassword(int length) {
+        String capitalCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String specialCharacters = "!@#$";
+        String numbers = "1234567890";
+        String combinedChars = capitalCaseLetters + lowerCaseLetters + specialCharacters + numbers;
+        Random random = new Random();
+        char[] password = new char[length];
 
+        password[0] = lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length()));
+        password[1] = capitalCaseLetters.charAt(random.nextInt(capitalCaseLetters.length()));
+        password[2] = specialCharacters.charAt(random.nextInt(specialCharacters.length()));
+        password[3] = numbers.charAt(random.nextInt(numbers.length()));
+
+        for(int i = 4; i< length ; i++) {
+            password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
+        }
+        return new String(password);
+    }
+
+    public static String generateAccountNumber(String toString, String code) {
+        return toString + code;
+    }
 }

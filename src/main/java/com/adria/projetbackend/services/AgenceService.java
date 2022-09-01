@@ -1,6 +1,7 @@
 package com.adria.projetbackend.services;
 
 import com.adria.projetbackend.exceptions.runTimeExpClasses.CodeAgencyMustBeUnique;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchAgenceException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
 import com.adria.projetbackend.models.Agence;
 import com.adria.projetbackend.models.Banquier;
@@ -10,6 +11,7 @@ import com.adria.projetbackend.repositories.AgenceRepository;
 import com.adria.projetbackend.repositories.BanquierRepository;
 import com.adria.projetbackend.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class AgenceService {
     }
 
     public List<Client> getClientsOfAgence(String agenceCode) {
-        return clientRepository.findClientsByAgence_Code(agenceCode);
+        return clientRepository.findClientsByAgence_Code(agenceCode, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
 
@@ -58,9 +60,11 @@ public class AgenceService {
         if ( agenceExists(code) ) {
             return agenceRepository.findByCode(code);
         }
-        throw new NoSuchCustomerException( "No such agency found" );
+        throw new NoSuchAgenceException( "No such agency found" );
 
     }
+
+
 
     public boolean agenceExists(String code) {
         return agenceRepository.existsByCode(code);

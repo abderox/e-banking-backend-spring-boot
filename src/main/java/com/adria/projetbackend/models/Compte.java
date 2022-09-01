@@ -1,5 +1,6 @@
 package com.adria.projetbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -21,9 +22,8 @@ public class Compte {
     private String intituleCompte;
     private boolean inclusVirement;
     private boolean bloqued;
-    private boolean activated;
-    private boolean suspended;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Client client;

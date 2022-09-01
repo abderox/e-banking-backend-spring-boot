@@ -1,5 +1,6 @@
-package com.adria.projetbackend.services;
+package com.adria.projetbackend.services.Compte;
 
+import com.adria.projetbackend.exceptions.runTimeExpClasses.BalanceMustBePositive;
 import com.adria.projetbackend.models.Compte;
 import com.adria.projetbackend.repositories.CompteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CompteService {
+public class CompteService implements ICompteService {
     @Autowired
     private CompteRepository compteRepository;
 
+    // ! abdelhadi has said : logique d ZFT
     public Compte ajouterCompte(Compte compte){
-        if (compteRepository.existsById(compte.getId())) throw new RuntimeException("Compte exist déja");
+        if (compteRepository.existsById(compte.getId()) ) throw new RuntimeException("No such account");
         return compteRepository.save(compte);
     }
 
@@ -28,7 +30,25 @@ public class CompteService {
         return compte;
     }
 
+
     public List<Compte> consultercomptes(){
         return compteRepository.findAll();
     }
+
+
+
+    public Long getLatestRow()
+    {
+        return compteRepository.findTopByOrderByIdDesc( ) != null ? compteRepository.findTopByOrderByIdDesc( ).getId( ) : 0;
+    }
+
+    public Compte ajouterCompteV2(Compte compte )
+    {
+        if(compte.getSolde() < 0)
+            throw new BalanceMustBePositive("Solde must be positive");
+        return compteRepository.save(compte);
+    }
+
+
+
 }

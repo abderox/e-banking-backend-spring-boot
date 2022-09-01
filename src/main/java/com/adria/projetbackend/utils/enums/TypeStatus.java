@@ -5,36 +5,38 @@ import org.slf4j.LoggerFactory;
 public enum TypeStatus {
 
 
-    ACTIVE(ToInt.ACTIVE),
-    SUSPENDU(ToInt.SUSPENDU),
-    BLOQUE(ToInt.BLOQUE),
-    DESACTIVE(ToInt.DESACTIVE);
+    ACTIVE(ToString.ACTIVE),
+    SUSPENDU(ToString.SUSPENDU),
+    BLOQUE(ToString.BLOQUE),
+    DESACTIVE(ToString.DESACTIVE);
 
 
-    private final Integer label;
+    private final String label;
 
-    public class ToInt {
+    public class ToString {
 
-        public static final int DESACTIVE = 0;
-        public static final int ACTIVE = 1;
-        public static final int BLOQUE = 2;
-        public static final int SUSPENDU = 3;
+        public static final String DESACTIVE = "DESACTIVE";
+        public static final String ACTIVE = "ACTIVE";
+        public static final String BLOQUE = "BLOQUE";
+        public static final String SUSPENDU = "SUSPENDU";
 
 
     }
 
-    TypeStatus(Integer label) {
+    TypeStatus(String label) {
         this.label = label;
     }
 
-    public Integer ToInt() {
+    public String toString() {
         return this.label;
     }
 
     public static TypeStatus getStatus(String status) {
 
-        String status_ = status != null ? status.toUpperCase() : "dd";
+        String status_ = status != null ? status : "dd";
+
         System.out.println(status_);
+
 
         switch (status_) {
             case "ACTIVE":
