@@ -237,7 +237,7 @@ public class BackOfficeService implements IBackOfficeServices {
             String status
                     = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
                     "Hello again , we are just apprising you , that your account is not yet activated .\nYour account is labelled : "
-                            + compte.getIntituleCompte( ) + "\nIdentified with : " + compte.getRib( ) + "\n\nPlease make sure to consult your banker for any issues . :\n\nBest regards , \nBeta-"
+                            + compte.getIntituleCompte( ) + "\nIdentified with : " + compte.getRib( ) + "\n\nPlease make sure to consult your banker for any issues .\n\nBest regards , \nBeta-"
                             + bankName,
                     "Hello from Beta-" + bankName + " ," +
                             " " + client.getUsername( ) + "!",
