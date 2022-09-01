@@ -2,6 +2,7 @@ package com.adria.projetbackend.controllers;
 
 
 import com.adria.projetbackend.dtos.ClientRegistration;
+import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.models.Client;
 import com.adria.projetbackend.models.UserE;
@@ -87,6 +88,16 @@ public class BackOfficeController {
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
 
+
+    }
+
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
+    @PostMapping("/add-client-first-account")
+    public ResponseEntity<?> addClientAccount(@RequestBody NewCompteDto newCompteDto) {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            return new ResponseEntity<>(backOfficeService.addFirstAccount(newCompteDto), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
 
     }
 

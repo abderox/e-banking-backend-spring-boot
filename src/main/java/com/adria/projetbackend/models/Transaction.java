@@ -1,6 +1,7 @@
 package com.adria.projetbackend.models;
 
 import com.adria.projetbackend.utils.enums.TypeTransaction;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,10 +18,12 @@ import java.util.Objects;
 @ToString
 @AllArgsConstructor @NoArgsConstructor
 public class Transaction {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_transaction")
     private Long id;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreationTimestamp
     private Date dateCreation;
 
@@ -34,6 +37,8 @@ public class Transaction {
     private double montant;
     private String referenceTransaction;
 
+
+    @JsonBackReference
     @ToString.Exclude
     @OneToMany(mappedBy = "transaction")
     private Collection<Virement> virements;

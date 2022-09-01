@@ -1,9 +1,11 @@
 package com.adria.projetbackend.utils.enums;
-
+/**
+ * @autor abderox
+ */
 public enum TypeTransaction {
     VIREMENT(ToString.VIREMENT),
     RETRAIT(ToString.RETRAIT),
-    DEOPT(ToString.DEPOT);
+    DEPOT(ToString.DEPOT);
 
 
     private final String label;

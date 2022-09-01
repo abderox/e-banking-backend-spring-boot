@@ -2,9 +2,7 @@ package com.adria.projetbackend.exceptions.controllerAdvices;
 
 
 import com.adria.projetbackend.exceptions.ApiError;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.BalanceMustBePositive;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchAccountException;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBanquierException;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +28,25 @@ public class AccountHandlingExp {
     public ApiError handleException(BalanceMustBePositive ex) {
         return new ApiError(HttpStatus.CONFLICT, ex.getMessage( ));
     }
+
+    @ExceptionHandler(value
+            = CustomerHasAccountException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ApiError handleException(CustomerHasAccountException ex) {
+        return new ApiError(HttpStatus.CONFLICT, ex.getMessage( ));
+    }
+
+    @ExceptionHandler(value
+            = TransactionExp.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ApiError handleException(TransactionExp ex) {
+        return new ApiError(HttpStatus.CONFLICT, ex.getMessage( ));
+    }
+
+
+
 
 
 

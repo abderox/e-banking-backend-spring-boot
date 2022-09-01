@@ -1,7 +1,7 @@
 package com.adria.projetbackend.utils.enums;
 
 /**
- * @autor abdelhadi mouzafir
+ * @autor abderox
  */
 
 public enum RolesE {

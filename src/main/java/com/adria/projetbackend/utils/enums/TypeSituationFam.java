@@ -1,5 +1,7 @@
 package com.adria.projetbackend.utils.enums;
-
+/**
+ * @autor abderox
+ */
 public enum TypeSituationFam {
 
     MARRIED(ToString.MARRIED),

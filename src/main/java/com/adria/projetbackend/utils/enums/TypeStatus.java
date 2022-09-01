@@ -1,5 +1,7 @@
 package com.adria.projetbackend.utils.enums;
-
+/**
+ * @autor abderox
+ */
 import org.slf4j.LoggerFactory;
 
 public enum TypeStatus {

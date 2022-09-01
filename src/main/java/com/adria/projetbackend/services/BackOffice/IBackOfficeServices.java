@@ -23,7 +23,7 @@ public interface IBackOfficeServices {
     Client consulterClientById(Long id);
     ClientRegistration ajouterNouveauClient(ClientRegistration clientRegistration) throws ParseException;
     Client consulterClientByIdentifiant(String clientIdentity);
-    Compte ajouterNouveauCompte(NewCompteDto newCompteDto);
+    Compte addFirstAccount(NewCompteDto newCompteDto);
 
 
 

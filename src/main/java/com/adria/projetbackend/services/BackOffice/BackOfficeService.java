@@ -1,14 +1,19 @@
 package com.adria.projetbackend.services.BackOffice;
 
+/**
+ * @autor abderox
+ */
 
 import com.adria.projetbackend.dtos.ClientRegistration;
 import com.adria.projetbackend.dtos.ClientsDto;
 import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.CustmerAlreadyExistsException;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.CustomerHasAccountException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
 import com.adria.projetbackend.models.Address;
 import com.adria.projetbackend.models.Client;
 import com.adria.projetbackend.models.Compte;
+import com.adria.projetbackend.models.Transaction;
 import com.adria.projetbackend.repositories.ClientRepository;
 import com.adria.projetbackend.repositories.CompteRepository;
 import com.adria.projetbackend.services.AddressService;
@@ -18,10 +23,12 @@ import com.adria.projetbackend.services.Compte.ICompteService;
 import com.adria.projetbackend.services.Email.EmailDetails;
 import com.adria.projetbackend.services.Email.EmailService;
 import com.adria.projetbackend.services.RoleService;
+import com.adria.projetbackend.services.Transaction.ITransactionService;
 import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import com.adria.projetbackend.utils.enums.TypePieceID;
 import com.adria.projetbackend.utils.enums.TypeSituationFam;
 import com.adria.projetbackend.utils.enums.TypeStatus;
+import com.adria.projetbackend.utils.enums.TypeTransaction;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -32,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 
@@ -56,6 +64,9 @@ public class BackOfficeService implements IBackOfficeServices {
 
     @Autowired
     ICompteService compteService;
+
+    @Autowired
+    ITransactionService transactionService;
 
     @Autowired
     AddressService addressService;
@@ -104,7 +115,7 @@ public class BackOfficeService implements IBackOfficeServices {
         clientRepository.save(client);
         String bankName = client.getAgence( ).getBanque( ).getRaisonSociale( );
         String status
-                = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ), "Welcome to Beta-" + bankName + " ,and Thank you for choosing us ! \nHere is a temporary password for your account : " + temporaryPassword + " \nYou must change it after you login.\nDISCLAIMER : YOUR CLIENT SPACE WILL NOT BE AVAILABLE UNLESS YOUR ACCOUNT IS ACTIVATED .\n\nBest regards , \n"+bankName,
+                = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ), "Welcome to Beta-" + bankName + " ,and Thank you for choosing us ! \nHere is a temporary password for your account : " + temporaryPassword + " \nYou must change it after you login.\nDISCLAIMER : YOUR CLIENT SPACE WILL NOT BE AVAILABLE UNLESS YOUR ACCOUNT IS ACTIVATED .\n\nBest regards , \n" + bankName,
                 "Welcome to Beta-" + bankName + " ," +
                         " " + client.getUsername( ) + "!",
                 ""));
@@ -161,9 +172,9 @@ public class BackOfficeService implements IBackOfficeServices {
     @Transactional(readOnly = true)
     public List<ClientsDto> consulterTousClients(String agenceCode) {
 
-        List<Client> clients =  agenceService.getClientsOfAgence(agenceCode);
-        return modelMapper.map(clients, new TypeToken<List<ClientsDto>>() {
-        }.getType());
+        List<Client> clients = agenceService.getClientsOfAgence(agenceCode);
+        return modelMapper.map(clients, new TypeToken<List<ClientsDto>>( ) {
+        }.getType( ));
 
     }
 
@@ -175,20 +186,65 @@ public class BackOfficeService implements IBackOfficeServices {
 
 
     @Transactional
-    public Compte ajouterNouveauCompte(NewCompteDto newCompteDto) {
+    public Compte addFirstAccount(NewCompteDto newCompteDto) {
         Client client = consulterClientByIdentifiant(newCompteDto.getIdentifiantClient( ));
-        if(client==null){
+        Transaction transaction = new Transaction( );
+        if ( client == null ) {
             throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
         }
+        if ( client.getComptes( ).size( ) > 0 ) {
+            throw new CustomerHasAccountException("CUSTOMER HAS ALREADY HIS FIRST  ACCOUNT");
+        }
+
         Compte compte = convertToModel(newCompteDto);
         compte.setClient(client);
-        Long lastIdInDb = compteService.getLatestRow();
+        Long lastIdInDb = compteService.getLatestRow( );
         compte.setRib(UtilsMethods.generateAccountNumber(
-                client.getAgence().getCode(),client.getId( ).toString()
-                ,client.getAgence().getBanque().getId( ).toString()
-                ,(lastIdInDb + 1) + ""));
-        client.setStatus(TypeStatus.getStatus(newCompteDto.getStatusClient()));
+                client.getAgence( ).getCode( ), client.getId( ).toString( )
+                , client.getAgence( ).getBanque( ).getId( ).toString( )
+                , (lastIdInDb + 1) + ""));
+        compte.setIntituleCompte("Compte courant");
+        transaction.setCompte(compte);
+        transaction.setMontant(newCompteDto.getSolde( ));
+        transaction.setDateExecution(new Date( ));
+        transaction.setType(TypeTransaction.DEPOT);
+        transaction.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
+                , client.getId( ).toString( ), TypeTransaction.DEPOT));
+
+        if ( transaction.getMontant( ) > 0 ) {
+            client.setStatus(TypeStatus.getStatus(newCompteDto.getStatusClient( )));
+        } else {
+            client.setStatus(TypeStatus.DESACTIVE);
+        }
+
+
+        transactionService.effectuerTransaction(transaction);
+
         clientRepository.save(client);
+
+        String bankName = client.getAgence( ).getBanque( ).getRaisonSociale( );
+        if ( client.getStatus( ) == TypeStatus.ACTIVE ) {
+            String status
+                    = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
+                    "Hello again , we are just apprising you , that your account is fully activated .\nYour account is labelled : "
+                            + compte.getIntituleCompte( ) + "\nIdentified with : " + compte.getRib( ) + "\n\nYour initializing balance : "
+                            + compte.getSolde( ) + "DH , following the transaction identified with : " + transaction.getReferenceTransaction( ) + "\n\nBest regards , \nBeta-"
+                            + bankName,
+                    "Hello from Beta-" + bankName + " ," +
+                            " " + client.getUsername( ) + "!",
+                    ""));
+        } else {
+            String status
+                    = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
+                    "Hello again , we are just apprising you , that your account is not yet activated .\nYour account is labelled : "
+                            + compte.getIntituleCompte( ) + "\nIdentified with : " + compte.getRib( ) + "\n\nPlease make sure to consult your banker for any issues . :\n\nBest regards , \nBeta-"
+                            + bankName,
+                    "Hello from Beta-" + bankName + " ," +
+                            " " + client.getUsername( ) + "!",
+                    ""));
+        }
+
+
         return compteService.ajouterCompteV2(compte);
     }
 

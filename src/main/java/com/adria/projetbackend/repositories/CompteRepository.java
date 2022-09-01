@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompteRepository extends JpaRepository<Compte, Long> {
     Compte findTopByOrderByIdDesc();
+    boolean existsByClient_IdentifiantClient(String identifiantClient);
 }

@@ -7,6 +7,7 @@ import com.adria.projetbackend.repositories.BanqueRepository;
 import com.adria.projetbackend.services.AgenceService;
 import com.adria.projetbackend.repositories.ClientRepository;
 import com.adria.projetbackend.services.User.UserService;
+import com.adria.projetbackend.utils.enums.TypeTransaction;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,6 +63,7 @@ class ProjetBackendApplicationTests {
 //        System.out.println(user.getPassword());
 //        System.out.println(generateAccountNumber("0011","36","1","340") );
 
+//        System.out.println(generateRefTransaction("120","36",TypeTransaction.VIREMENT) );
 
     }
 

@@ -101,19 +101,12 @@ public class BanquierAuthController {
     public ResponseEntity<?> getBanquierInfo() {
         UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
         BanquierDetailsDto banquierInfo = banquierService.getBanquierDto(myUserDetails.getUser( ).getId( ));
-//        banquierInfo.setEmailUser(myUserDetails.getUser().getEmail());
-//        banquierInfo.setAccessToken(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
         banquierInfo.setRoles(myUserDetails.getRoles( ).toArray(new String[myUserDetails.getRoles( ).size( )]));
 
         return new ResponseEntity<>(banquierInfo, HttpStatus.OK);
     }
 
-    @GetMapping("/add-client-account")
-    public ResponseEntity<?> addClientAccount(NewCompteDto newCompteDto) {
 
-        return new ResponseEntity<>(backOfficeService.ajouterNouveauCompte(newCompteDto), HttpStatus.OK);
-
-    }
 
 
 

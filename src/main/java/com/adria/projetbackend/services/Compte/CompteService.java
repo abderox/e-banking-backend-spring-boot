@@ -50,5 +50,10 @@ public class CompteService implements ICompteService {
     }
 
 
+    boolean compteExists(String identifiant) {
+        return compteRepository.existsByClient_IdentifiantClient(identifiant);
+    }
+
+
 
 }
