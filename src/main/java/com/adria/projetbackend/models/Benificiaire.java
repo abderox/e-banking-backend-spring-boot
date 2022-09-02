@@ -31,13 +31,6 @@ public class Benificiaire {
     @JoinColumn(name = "id_client")
     private Client client;
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
 
     @Override
     public boolean equals(Object o) {

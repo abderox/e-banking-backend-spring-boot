@@ -10,6 +10,7 @@ import com.adria.projetbackend.repositories.AddressRepository;
 import com.adria.projetbackend.repositories.AgenceRepository;
 import com.adria.projetbackend.repositories.BanquierRepository;
 import com.adria.projetbackend.repositories.ClientRepository;
+import com.adria.projetbackend.utils.enums.TypeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,10 @@ public class AgenceService {
 
     public List<Client> getClientsOfAgence(String agenceCode) {
         return clientRepository.findClientsByAgence_Code(agenceCode, Sort.by(Sort.Direction.DESC, "createdAt"));
+    }
+
+    public List<Client> getClientsByAgenceWithStatusDesactivated(String agenceCode, TypeStatus status) {
+        return clientRepository.findClientsByAgence_CodeAndStatus(agenceCode,status  ,Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
 

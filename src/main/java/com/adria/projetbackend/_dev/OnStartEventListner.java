@@ -56,7 +56,8 @@ public class OnStartEventListner {
         List<RolesE> rolesS = Arrays.asList(
                 RolesE.ROLE_ADMIN,
                 RolesE.ROLE_USER,
-                RolesE.ROLE_CLIENT
+                RolesE.ROLE_CLIENT,
+                RolesE.ROLE_ACTIVE_CLIENT
         );
 
         addAllRoles(rolesS);

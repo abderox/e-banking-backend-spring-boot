@@ -10,10 +10,7 @@ import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.CustmerAlreadyExistsException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.CustomerHasAccountException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
-import com.adria.projetbackend.models.Address;
-import com.adria.projetbackend.models.Client;
-import com.adria.projetbackend.models.Compte;
-import com.adria.projetbackend.models.Transaction;
+import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.repositories.ClientRepository;
 import com.adria.projetbackend.repositories.CompteRepository;
 import com.adria.projetbackend.services.AddressService;
@@ -25,10 +22,7 @@ import com.adria.projetbackend.services.Email.EmailService;
 import com.adria.projetbackend.services.RoleService;
 import com.adria.projetbackend.services.Transaction.ITransactionService;
 import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
-import com.adria.projetbackend.utils.enums.TypePieceID;
-import com.adria.projetbackend.utils.enums.TypeSituationFam;
-import com.adria.projetbackend.utils.enums.TypeStatus;
-import com.adria.projetbackend.utils.enums.TypeTransaction;
+import com.adria.projetbackend.utils.enums.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -39,8 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -79,7 +73,12 @@ public class BackOfficeService implements IBackOfficeServices {
 
 
     @Transactional
-    public ClientRegistration ajouterNouveauClient(ClientRegistration clientRegistration) throws ParseException {
+    public ClientRegistration ajouterNouveauClient(ClientRegistration clientRegistration,String codeAgence) throws ParseException {
+
+        if(!clientRegistration.getCodeAgence().equals(codeAgence))
+        {
+            throw new NoSuchCustomerException("WARNING : YOU HAVE NO ACCESS TO THIS AGENCE !");
+        }
 
         Client client = convertToModel(clientRegistration);
 
@@ -125,12 +124,9 @@ public class BackOfficeService implements IBackOfficeServices {
 
     }
 
-    @Transactional(readOnly = true)
-    public Client consulterClientById(Long id) {
-        if ( idExists(id) ) {
-            return clientRepository.findById(id).get( );
-        } else throw new NoSuchCustomerException("CUSTOMER WITH THAT ID DOES NOT EXIST");
 
+    public Client consulterClientById(Long id) {
+       return clientService.consulterClientById(id);
     }
 
     @Transactional(readOnly = true)
@@ -178,6 +174,14 @@ public class BackOfficeService implements IBackOfficeServices {
 
     }
 
+    @Transactional(readOnly = true)
+    public List<ClientsDto> consulterTousNouveauxClients(String agenceCode){
+        List<Client> clients = agenceService.getClientsByAgenceWithStatusDesactivated(agenceCode,TypeStatus.DESACTIVE);
+        List<Client> clientsFiltered = clients.stream( ).filter(client ->client.getComptes().size()<1 ).collect(Collectors.toList( ));
+        return modelMapper.map(clientsFiltered, new TypeToken<List<ClientsDto>>( ) {
+        }.getType( ));
+    }
+
     public Client consulterClientByIdentifiant(String clientIdentity) {
         if ( identifiantClientExists(clientIdentity) ) {
             return clientRepository.findByIdentifiantClient(clientIdentity);
@@ -217,13 +221,11 @@ public class BackOfficeService implements IBackOfficeServices {
             client.setStatus(TypeStatus.DESACTIVE);
         }
 
-
         transactionService.effectuerTransaction(transaction);
-
-        clientRepository.save(client);
 
         String bankName = client.getAgence( ).getBanque( ).getRaisonSociale( );
         if ( client.getStatus( ) == TypeStatus.ACTIVE ) {
+            client.setRoles(new HashSet<>(Arrays.asList(roleService.getRole(RolesE.ROLE_ACTIVE_CLIENT))));
             String status
                     = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
                     "Hello again , we are just apprising you , that your account is fully activated .\nYour account is labelled : "
@@ -244,8 +246,50 @@ public class BackOfficeService implements IBackOfficeServices {
                     ""));
         }
 
-
+        clientRepository.save(client);
         return compteService.ajouterCompteV2(compte);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Transaction> getTransactionsOfClient(String clientIdentity) {
+        Client client = consulterClientByIdentifiant(clientIdentity);
+        if ( client == null ) {
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
+        }
+        List<Compte> comptes = client.getComptes( );
+        List<Transaction> transactions = new ArrayList<>( );
+        for ( Compte compte : comptes ) {
+            transactions.addAll(compte.getTransactions( ));
+        }
+        return transactions;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Compte> getAccountsOfClient(String clientIdentity) {
+        Client client = consulterClientByIdentifiant(clientIdentity);
+        if ( client == null ) {
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
+        }
+        return client.getComptes( );
+    }
+
+    @Transactional(readOnly = true)
+    public List<Compte> consulterToutesLesComptes(String  identity, String agenceCode) {
+        Client client = consulterClientByIdentifiant(identity);
+        if  ( !client.getAgence().getCode().equals(agenceCode) ) {
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
+        }
+        return getAccountsOfClient(identity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Transaction> consulterToutesLesTransactions(String clientIdentity,String codeAgence) {
+        Client client = consulterClientByIdentifiant(clientIdentity);
+        if ( client.getAgence().getCode().equals(codeAgence) ) {
+            return getTransactionsOfClient(clientIdentity);
+        } else {
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST IN THIS AGENCE");
+        }
     }
 
     public boolean identifiantClientExists(String identifiantClient) {

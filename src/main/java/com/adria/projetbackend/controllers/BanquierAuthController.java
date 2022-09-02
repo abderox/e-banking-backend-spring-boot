@@ -97,6 +97,9 @@ public class BanquierAuthController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+
+
     @GetMapping(SecurityAuthConstants.GET_BANKER_INFO)
     public ResponseEntity<?> getBanquierInfo() {
         UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );

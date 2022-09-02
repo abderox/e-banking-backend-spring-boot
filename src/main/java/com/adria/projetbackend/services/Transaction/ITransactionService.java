@@ -8,7 +8,7 @@ public interface ITransactionService {
 
      void effectuerTransaction(Transaction transaction);
     Transaction consulterTransaction(Long id);
-    List<Transaction> consulterTransactions();
+    List<Transaction> consulterTransactions(String rib);
     Long getLatestRow();
 
 }

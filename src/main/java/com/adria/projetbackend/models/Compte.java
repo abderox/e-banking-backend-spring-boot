@@ -28,6 +28,7 @@ public class Compte {
     @JoinColumn(name = "user_id")
     private Client client;
 
+    @JsonBackReference
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "compte")
     private List<Transaction> transactions = new ArrayList<>( );

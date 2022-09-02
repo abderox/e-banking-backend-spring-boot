@@ -13,7 +13,7 @@ public class CompteService implements ICompteService {
     @Autowired
     private CompteRepository compteRepository;
 
-    // ! abdelhadi has said : logique d ZFT
+    // !  logique d ZFT TODO : to be reviewed
     public Compte ajouterCompte(Compte compte){
         if (compteRepository.existsById(compte.getId()) ) throw new RuntimeException("No such account");
         return compteRepository.save(compte);
@@ -31,11 +31,13 @@ public class CompteService implements ICompteService {
     }
 
 
+
     public List<Compte> consultercomptes(){
         return compteRepository.findAll();
     }
 
 
+    // ? from here
 
     public Long getLatestRow()
     {
@@ -47,6 +49,11 @@ public class CompteService implements ICompteService {
         if(compte.getSolde() < 0)
             throw new BalanceMustBePositive("Solde must be positive");
         return compteRepository.save(compte);
+    }
+
+    public boolean existsByRib(String rib)
+    {
+        return compteRepository.existsByRib(rib);
     }
 
 

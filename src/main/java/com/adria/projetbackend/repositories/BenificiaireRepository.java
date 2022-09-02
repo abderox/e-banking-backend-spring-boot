@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BenificiaireRepository extends JpaRepository<Benificiaire, Long> {
+    boolean existsByRib(String rib);
 }

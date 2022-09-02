@@ -1,4 +1,7 @@
 package com.adria.projetbackend.services.Transaction;
+/**
+ * @autor abderox
+ */
 
 import com.adria.projetbackend.exceptions.runTimeExpClasses.BalanceMustBePositive;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.TransactionExp;
@@ -35,8 +38,8 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public List<Transaction> consulterTransactions() {
-        return null;
+    public List<Transaction> consulterTransactions(String rib) {
+        return transactionRepository.findByCompte_RibOrderByDateCreationDesc(rib);
     }
 
     @Override

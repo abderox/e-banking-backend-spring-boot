@@ -71,7 +71,13 @@ public class BackOfficeController {
     public ResponseEntity<?> registerUser(@RequestBody @Valid ClientRegistration clientRegistration) throws ParseException {
 
         try {
-            return new ResponseEntity<>(backOfficeService.ajouterNouveauClient(clientRegistration), HttpStatus.OK);
+            if ( userService.isUserFullyAuthorized( ) ) {
+                UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+                String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
+                return new ResponseEntity<>(backOfficeService.ajouterNouveauClient(clientRegistration, agenceCode), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiError(HttpStatus.BAD_REQUEST, e.getMessage( )), HttpStatus.BAD_REQUEST);
         }
@@ -92,6 +98,39 @@ public class BackOfficeController {
     }
 
     @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
+    @GetMapping("/get-recent-clients")
+    public ResponseEntity<?> showRecentClients() {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
+            return new ResponseEntity<>(backOfficeService.consulterTousNouveauxClients(agenceCode), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
+    }
+
+
+    @GetMapping("/get-transactions-client/{identity}")
+    public ResponseEntity<?> getTransactionsClient(@PathVariable String identity) {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
+            return new ResponseEntity<>(backOfficeService.consulterToutesLesTransactions(identity, agenceCode), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
+    }
+
+
+    @GetMapping("/get-accounts-client/{identity}")
+    public ResponseEntity<?> getAccountsClient(@PathVariable String identity) {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
+            return new ResponseEntity<>(backOfficeService.consulterToutesLesComptes(identity, agenceCode), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
+    }
+
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
     @PostMapping("/add-client-first-account")
     public ResponseEntity<?> addClientAccount(@RequestBody NewCompteDto newCompteDto) {
         if ( userService.isUserFullyAuthorized( ) ) {
@@ -102,20 +141,9 @@ public class BackOfficeController {
     }
 
 
-    //TODO delete these after
 
 
-    //    @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
-//    @GetMapping("/getAll")
-//    @ApiOperation(value = "This method is used to get all clients")
-//    public ResponseEntity<?> getAll() {
-//
-//        if ( userService.isUserFullyAuthorized( ) )
-//            return new ResponseEntity<>(backOfficeService.consulterTousClients( ), HttpStatus.OK);
-//        else
-//            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Token expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
-//
-//    }
+
 
 
 

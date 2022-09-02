@@ -11,5 +11,6 @@ public interface ICompteService {
     Compte consulterCompte(Long id);
     List<Compte> consultercomptes();
     Long getLatestRow();
+    boolean existsByRib(String rib);
 
 }

@@ -10,7 +10,7 @@ public enum RolesE {
     ROLE_USER(ToString.ROLE_USER),
     ROLE_ADMIN(ToString.ROLE_ADMIN),
     ROLE_CLIENT(ToString.ROLE_CLIENT),
-    ROLE_ACTIVE_USER(ToString.ROLE_ACTIVE_USER),
+    ROLE_ACTIVE_CLIENT(ToString.ROLE_ACTIVE_CLIENT),
     ROLE_SUPER_ADMIN(ToString.ROLE_SUPER_ADMIN),
 
     ;
@@ -24,7 +24,7 @@ public enum RolesE {
         public static final String ROLE_ADMIN = "ROLE_ADMIN";
         public static final String ROLE_CLIENT = "ROLE_CLIENT";
         public static final String ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
-        public static final String ROLE_ACTIVE_USER = "ROLE_ACTIVE_USER";
+        public static final String ROLE_ACTIVE_CLIENT= "ROLE_ACTIVE_CLIENT";
 
 
     }

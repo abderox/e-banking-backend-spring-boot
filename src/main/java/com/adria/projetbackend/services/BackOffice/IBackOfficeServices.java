@@ -5,6 +5,7 @@ import com.adria.projetbackend.dtos.ClientsDto;
 import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.models.Client;
 import com.adria.projetbackend.models.Compte;
+import com.adria.projetbackend.models.Transaction;
 
 import java.text.ParseException;
 import java.util.List;
@@ -16,14 +17,19 @@ public interface IBackOfficeServices {
     boolean idExists(Long id);
     boolean identifiantClientExists(String identifiantClient);
     List<ClientsDto> consulterTousClients(String agenceCode);
+    List<ClientsDto> consulterTousNouveauxClients(String agenceCode);
     void supprimerClient(String clientIdentity);
     Client modifierClient(Client client);
     Client consulterClientByEmail(String email);
     Client consulterClientByUsername(String username);
     Client consulterClientById(Long id);
-    ClientRegistration ajouterNouveauClient(ClientRegistration clientRegistration) throws ParseException;
+    ClientRegistration ajouterNouveauClient(ClientRegistration clientRegistration,String codeAgence) throws ParseException;
     Client consulterClientByIdentifiant(String clientIdentity);
     Compte addFirstAccount(NewCompteDto newCompteDto);
+    List<Transaction> getTransactionsOfClient(String clientIdentity);
+    List<Compte> getAccountsOfClient(String clientIdentity);
+    List<Transaction> consulterToutesLesTransactions(String identity , String codeAgence);
+    List<Compte> consulterToutesLesComptes(String  identity, String agenceCode);
 
 
 
