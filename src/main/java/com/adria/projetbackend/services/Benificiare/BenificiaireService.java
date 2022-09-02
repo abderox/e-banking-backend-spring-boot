@@ -1,5 +1,6 @@
 package com.adria.projetbackend.services.Benificiare;
 
+import com.adria.projetbackend.exceptions.runTimeExpClasses.DomesticBenifOnlyExp;
 import com.adria.projetbackend.models.Benificiaire;
 import com.adria.projetbackend.repositories.BenificiaireRepository;
 import com.adria.projetbackend.services.Compte.ICompteService;
@@ -19,7 +20,7 @@ public class BenificiaireService implements IBenificiareService {
 
 
     public Benificiaire ajouterBenificiaire(Benificiaire benificiaire){
-        if ( !compteService.existsByRib(benificiaire.getRib()) ) throw new RuntimeException("WE CURRENTLY ACCEPT ONLY DOMESTIC BENEFICIARIES WITH A VALID RIB.");
+        if ( !compteService.existsByRib(benificiaire.getRib()) ) throw new DomesticBenifOnlyExp("WE CURRENTLY ACCEPT ONLY DOMESTIC BENEFICIARIES WITH A VALID RIB.");
         return benificiaireRepository.save(benificiaire);
     }
 

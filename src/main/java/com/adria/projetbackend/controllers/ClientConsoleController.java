@@ -41,6 +41,7 @@ public class ClientConsoleController {
 
 
 
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ACTIVE_CLIENT})
     @GetMapping("/get-accounts-client")
     public ResponseEntity<?> getAccounts() {
         if ( userService.isUserFullyAuthorized( ) ) {
@@ -51,6 +52,7 @@ public class ClientConsoleController {
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
     }
 
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ACTIVE_CLIENT})
     @GetMapping("/get-transactions-client")
     public ResponseEntity<?> getTransactionsClient() {
         if ( userService.isUserFullyAuthorized( ) ) {

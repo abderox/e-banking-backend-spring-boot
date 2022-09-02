@@ -91,11 +91,12 @@ public class ClientService implements IClientServices {
         if ( benificiaire == null )
             throw new DomesticBenifOnlyExp("VALUES PROVIDED ARE EMPTY ... ");
         if ( benificiareService.existsByRib(benificiaire.getRib( )) ) {
-            throw new DomesticBenifOnlyExp("COULD NOT ADD BENIFICIAIRE .\nCAUSE : BENIFICIAIRE ALREADY EXISTS");
+            throw new DomesticBenifOnlyExp("BENIFICIAIRE ALREADY EXISTS TRY WITH ANOTHER VALID RIB");
         } else {
             Benificiaire benificiaire1 = convertToEntity(benificiaire);
             benificiaire1.setClient(client);
-//            benificiareService.ajouterBenificiaire(benificiaire1);
+            benificiaire1.setNature("DOMESTIQUE");
+            benificiareService.ajouterBenificiaire(benificiaire1);
             return benificiaire1;
         }
     }

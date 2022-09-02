@@ -49,6 +49,8 @@ public class Client extends UserE {
     @Enumerated(EnumType.STRING)
     private TypeStatus status;
 
+    @JsonBackReference
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.EAGER , mappedBy = "client")
     private List<Benificiaire> benificiaires = new ArrayList<>();
 

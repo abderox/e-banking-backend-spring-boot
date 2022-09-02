@@ -109,6 +109,7 @@ public class BackOfficeController {
     }
 
 
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
     @GetMapping("/get-transactions-client/{identity}")
     public ResponseEntity<?> getTransactionsClient(@PathVariable String identity) {
         if ( userService.isUserFullyAuthorized( ) ) {

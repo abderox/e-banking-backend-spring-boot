@@ -12,6 +12,7 @@ import com.adria.projetbackend.services.RoleService;
 import com.adria.projetbackend.services.User.IUserService;
 import com.adria.projetbackend.services.User.UserDetailsImpl;
 import com.adria.projetbackend.utils.constants.SecurityAuthConstants;
+import com.adria.projetbackend.utils.storage.JwtToken;
 import com.adria.projetbackend.utils.storage.RedisRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,7 +70,7 @@ public class ClientAuthController {
             clientInfo.setEmailUser(myUserDetails.getUsername( ));
             clientInfo.setAccessToken(accessToken);
 
-            LoginResponse userJwt = new LoginResponse(myUserDetails.getUsername( ), accessToken);
+            redisRepository.add(new JwtToken(accessToken, myUserDetails.getUsername( )));
             return new ResponseEntity<>(clientInfo, HttpStatus.OK);
 
         } catch (BadCredentialsException e) {
