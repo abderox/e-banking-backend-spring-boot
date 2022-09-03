@@ -4,8 +4,8 @@ package com.adria.projetbackend.exceptions.controllerAdvices;
  */
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.DomesticBenifOnlyExp;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBanquierException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBenificException;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.NotValidDateExp;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,23 +13,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class BenifHandlingExp {
+public class TransactionHandlingExp {
+
+
 
 
     @ExceptionHandler(value
-            = DomesticBenifOnlyExp.class)
+            = NotValidDateExp.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ApiError handleException(DomesticBenifOnlyExp ex) {
-        return new ApiError(HttpStatus.NOT_FOUND, ex.getMessage( ));
-    }
-
-
-    @ExceptionHandler(value
-            = NoSuchBenificException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ApiError handleException(NoSuchBenificException ex) {
+    public ApiError handleException(NotValidDateExp ex) {
         return new ApiError(HttpStatus.NOT_FOUND, ex.getMessage( ));
     }
 }

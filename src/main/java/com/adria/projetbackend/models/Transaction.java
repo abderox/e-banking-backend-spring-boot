@@ -34,8 +34,12 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TypeTransaction type;
 
+    @Column(nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
     private double montant;
     private String referenceTransaction;
+
+    @Column(name = "executed" , columnDefinition = "boolean default false" , nullable = false)
+    private boolean executed;
 
 
     @JsonBackReference

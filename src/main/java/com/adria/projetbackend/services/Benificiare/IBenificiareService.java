@@ -6,5 +6,6 @@ public interface IBenificiareService {
 
     Benificiaire ajouterBenificiaire(Benificiaire benificiaire);
     boolean existsByRibAndClientId(String rib,Long id);
+    Benificiaire consulterBenificiaireByRib(String rib,Long idClient);
 
 }

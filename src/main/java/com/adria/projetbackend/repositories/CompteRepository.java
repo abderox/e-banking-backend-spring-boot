@@ -10,5 +10,5 @@ public interface CompteRepository extends JpaRepository<Compte, Long> {
     Compte findTopByOrderByIdDesc();
     boolean existsByClient_IdentifiantClient(String identifiantClient);
     boolean existsByRib(String rib);
-
+    Compte findByRib(String rib);
 }

@@ -19,6 +19,8 @@ public class TransactionService implements ITransactionService {
     @Autowired
     TransactionRepository transactionRepository;
 
+
+
     @Transactional
     public void effectuerTransaction(Transaction transaction) {
         if ( transaction.getMontant( ) < 0 ) {
@@ -32,6 +34,7 @@ public class TransactionService implements ITransactionService {
 
     }
 
+
     @Override
     public Transaction consulterTransaction(Long id) {
         return null;
@@ -40,6 +43,15 @@ public class TransactionService implements ITransactionService {
     @Override
     public List<Transaction> consulterTransactions(String rib) {
         return transactionRepository.findByCompte_RibOrderByDateCreationDesc(rib);
+    }
+
+
+    public List<Transaction> consulterToutesLesTransactions(){
+        return transactionRepository.findAll();
+    }
+
+    public List<Transaction> consulterToutesLesTransactionsNonExecuted(){
+        return transactionRepository.findAllByExecutedIsFalse();
     }
 
     @Override

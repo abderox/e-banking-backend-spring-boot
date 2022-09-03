@@ -1,6 +1,7 @@
 package com.adria.projetbackend.services.Benificiare;
 
 import com.adria.projetbackend.exceptions.runTimeExpClasses.DomesticBenifOnlyExp;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBenificException;
 import com.adria.projetbackend.models.Benificiaire;
 import com.adria.projetbackend.repositories.BenificiaireRepository;
 import com.adria.projetbackend.services.Compte.ICompteService;
@@ -28,7 +29,12 @@ public class BenificiaireService implements IBenificiareService {
         return benificiaireRepository.existsByRibAndClient_Id(rib,id);
     }
 
-
+    @Override
+    public Benificiaire consulterBenificiaireByRib(String rib , Long idClient) {
+        Benificiaire benificiaire =  benificiaireRepository.findByRibAndClient_Id(rib,idClient);
+        if (benificiaire.equals(null)) throw new NoSuchBenificException("NO SUCH BENEFICIARY EXISTS ! PLEASE CHECK THE RIB PROVIDED.");
+        return benificiaire;
+    }
 
 
     // ! To be reviewed

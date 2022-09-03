@@ -3,6 +3,7 @@ package com.adria.projetbackend.services.Compte;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.BalanceMustBePositive;
 import com.adria.projetbackend.models.Compte;
 import com.adria.projetbackend.repositories.CompteRepository;
+import com.adria.projetbackend.services.Transaction.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +11,12 @@ import java.util.List;
 
 @Service
 public class CompteService implements ICompteService {
+
     @Autowired
     private CompteRepository compteRepository;
+
+    @Autowired
+    private ITransactionService transactionService;
 
     // !  logique d ZFT TODO : to be reviewed
     public Compte ajouterCompte(Compte compte){
@@ -36,12 +41,20 @@ public class CompteService implements ICompteService {
         return compteRepository.findAll();
     }
 
+    boolean compteExists(String identifiant) {
+        return compteRepository.existsByClient_IdentifiantClient(identifiant);
+    }
+
 
     // ? from here
 
     public Long getLatestRow()
     {
         return compteRepository.findTopByOrderByIdDesc( ) != null ? compteRepository.findTopByOrderByIdDesc( ).getId( ) : 0;
+    }
+
+    public Compte consulterCompteByRib(String rib){
+        return compteRepository.findByRib(rib);
     }
 
     public Compte ajouterCompteV2(Compte compte )
@@ -56,10 +69,6 @@ public class CompteService implements ICompteService {
         return compteRepository.existsByRib(rib);
     }
 
-
-    boolean compteExists(String identifiant) {
-        return compteRepository.existsByClient_IdentifiantClient(identifiant);
-    }
 
 
 

@@ -2,6 +2,7 @@ package com.adria.projetbackend.controllers;
 
 import com.adria.projetbackend.dtos.NewBenificiare;
 import com.adria.projetbackend.dtos.NewCompteDto;
+import com.adria.projetbackend.dtos.NewVirementDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.security.aspects.RolesAllowed;
 import com.adria.projetbackend.services.AddressService;
@@ -12,6 +13,7 @@ import com.adria.projetbackend.services.Client.ClientService;
 import com.adria.projetbackend.services.RoleService;
 import com.adria.projetbackend.services.User.IUserService;
 import com.adria.projetbackend.services.User.UserDetailsImpl;
+import com.adria.projetbackend.services.Virement.IVirementService;
 import com.adria.projetbackend.utils.constants.SecurityAuthConstants;
 import com.adria.projetbackend.utils.enums.RolesE;
 import io.swagger.annotations.Api;
@@ -22,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
 
 
 @RestController
@@ -37,6 +41,9 @@ public class ClientConsoleController {
 
     @Autowired
     ClientService clientService;
+
+    @Autowired
+    IVirementService virementService;
 
 
 
@@ -69,6 +76,17 @@ public class ClientConsoleController {
         if ( userService.isUserFullyAuthorized( ) ) {
             UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
             return new ResponseEntity<>(clientService.ajouterBenificiaire(myUserDetails.getUser().getId(), newBenificiare), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
+    }
+
+
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ACTIVE_CLIENT})
+    @PostMapping("/make-transfer")
+    public ResponseEntity<?> makeTransfer( NewVirementDto newVirementDto) throws ParseException {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            return new ResponseEntity<>(virementService.effectuerVirement(newVirementDto,myUserDetails.getUser().getId( )), HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
     }

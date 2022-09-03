@@ -10,4 +10,5 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     Transaction findTopByOrderByIdDesc();
     List<Transaction> findByCompte_RibOrderByDateCreationDesc(String rib);
+    List<Transaction> findAllByExecutedIsFalse();
 }

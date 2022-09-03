@@ -63,10 +63,10 @@ public class ClientService implements IClientServices {
     }
 
     @Transactional(readOnly = true)
-    public List<Transaction> consulterToutesLesTransactions(Long clientIdentity) {
+    public List<TransactionsClient> consulterToutesLesTransactions(Long clientIdentity) {
         Client client = consulterClientById(clientIdentity);
         if ( client != null ) {
-            return getTransactionsOfClient(client);
+            return modelMapper.map(getTransactionsOfClient(client),new TypeToken<List<TransactionsClient>>(){}.getType());
         } else {
             throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST IN THIS AGENCE");
         }
