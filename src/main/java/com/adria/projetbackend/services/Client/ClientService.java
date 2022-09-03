@@ -1,17 +1,13 @@
 package com.adria.projetbackend.services.Client;
 
-import com.adria.projetbackend.dtos.BanquierDetailsDto;
-import com.adria.projetbackend.dtos.ClientDetailsDto;
-import com.adria.projetbackend.dtos.NewBenificiare;
+import com.adria.projetbackend.dtos.*;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.DomesticBenifOnlyExp;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBanquierException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
 import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.repositories.ClientRepository;
-import com.adria.projetbackend.services.BackOffice.IBackOfficeServices;
 import com.adria.projetbackend.services.Benificiare.IBenificiareService;
-import com.adria.projetbackend.utils.enums.TypeStatus;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,12 +53,13 @@ public class ClientService implements IClientServices {
     }
 
     @Transactional(readOnly = true)
-    public List<Compte> consulterToutesLesComptes(Long identity) {
+    public List<CompteClient> consulterToutesLesComptes(Long identity) {
         Client client = consulterClientById(identity);
         if ( client == null ) {
             throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
         }
-        return client.getComptes( );
+        return modelMapper.map(client.getComptes(), new TypeToken<List<CompteClient>>( ) {
+        }.getType( ));
     }
 
     @Transactional(readOnly = true)
@@ -90,7 +87,7 @@ public class ClientService implements IClientServices {
         Client client = consulterClientById(clientId);
         if ( benificiaire == null )
             throw new DomesticBenifOnlyExp("VALUES PROVIDED ARE EMPTY ... ");
-        if ( benificiareService.existsByRib(benificiaire.getRib( )) ) {
+        if ( benificiareService.existsByRibAndClientId(benificiaire.getRib( ),clientId) ) {
             throw new DomesticBenifOnlyExp("BENIFICIAIRE ALREADY EXISTS TRY WITH ANOTHER VALID RIB");
         } else {
             Benificiaire benificiaire1 = convertToEntity(benificiaire);
@@ -112,6 +109,10 @@ public class ClientService implements IClientServices {
 
     public boolean idExists(Long id) {
         return clientRepository.existsById(id);
+    }
+
+    private CompteClient convertToDto(Compte compte) {
+        return modelMapper.map(compte, CompteClient.class);
     }
 
 }

@@ -19,7 +19,7 @@ public class Benificiaire {
     private Long id;
     private String nature;
     private String nom;
-    @Column(length = 24 , unique = true, nullable = false)
+    @Column(length = 24 , nullable = false)
     private String rib;
     private String intituleVirement;
 

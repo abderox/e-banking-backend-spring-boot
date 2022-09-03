@@ -24,8 +24,8 @@ public class BenificiaireService implements IBenificiareService {
         return benificiaireRepository.save(benificiaire);
     }
 
-    public boolean existsByRib(String rib){
-        return benificiaireRepository.existsByRib(rib);
+    public boolean existsByRibAndClientId(String rib,Long id){
+        return benificiaireRepository.existsByRibAndClient_Id(rib,id);
     }
 
 

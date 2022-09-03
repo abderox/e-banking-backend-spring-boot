@@ -221,7 +221,7 @@ public class BackOfficeService implements IBackOfficeServices {
             client.setStatus(TypeStatus.DESACTIVE);
         }
 
-        transactionService.effectuerTransaction(transaction);
+
 
         String bankName = client.getAgence( ).getBanque( ).getRaisonSociale( );
         if ( client.getStatus( ) == TypeStatus.ACTIVE ) {
@@ -247,7 +247,10 @@ public class BackOfficeService implements IBackOfficeServices {
         }
 
         clientRepository.save(client);
-        return compteService.ajouterCompteV2(compte);
+        compteService.ajouterCompteV2(compte);
+        transactionService.effectuerTransaction(transaction);
+
+        return compte;
     }
 
     @Transactional(readOnly = true)

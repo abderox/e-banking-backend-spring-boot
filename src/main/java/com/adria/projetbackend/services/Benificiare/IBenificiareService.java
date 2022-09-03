@@ -5,6 +5,6 @@ import com.adria.projetbackend.models.Benificiaire;
 public interface IBenificiareService {
 
     Benificiaire ajouterBenificiaire(Benificiaire benificiaire);
-    boolean existsByRib(String rib);
+    boolean existsByRibAndClientId(String rib,Long id);
 
 }
