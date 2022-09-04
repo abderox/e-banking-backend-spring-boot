@@ -65,7 +65,7 @@ public class CompteService implements ICompteService {
     }
 
 
-    public void updateCompte(Compte compte, double amount, TypeTransaction type) {
+    public double updateCompte(Compte compte, double amount, TypeTransaction type) {
         if ( amount < 0 )
             throw new BalanceMustBePositive("WARNING : trying to update balance with a non positive value");
         if(compte.getSolde()<amount && type.equals(TypeTransaction.RETRAIT))
@@ -82,6 +82,7 @@ public class CompteService implements ICompteService {
 
 
         compteRepository.save(compte);
+        return compte.getSolde( );
     }
 
 

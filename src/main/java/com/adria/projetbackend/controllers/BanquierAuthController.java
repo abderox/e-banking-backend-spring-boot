@@ -104,12 +104,13 @@ public class BanquierAuthController {
     }
 
 
-    @GetMapping("/validate-all-transfers")
-    public ResponseEntity validateAll() throws ParseException {
-        schedOperations.applyTxs();
-        return  ResponseEntity.ok( "ok");
-
-    }
+    // ! TODO: DELETE THIS AFTERMATH
+//    @GetMapping("/validate-all-transfers")
+//    public ResponseEntity validateAll() throws ParseException {
+//        schedOperations.applyTxs();
+//        return  ResponseEntity.ok( "ok");
+//
+//    }
 
 
 }

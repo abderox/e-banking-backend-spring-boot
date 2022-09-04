@@ -85,10 +85,20 @@ public class ClientConsoleController {
 
     @RolesAllowed(roles = {RolesE.ToString.ROLE_ACTIVE_CLIENT})
     @PostMapping("/make-transfer")
-    public ResponseEntity<?> makeTransfer( NewVirementDto newVirementDto) throws ParseException {
+    public ResponseEntity<?> makeTransfer(@RequestBody NewVirementDto newVirementDto) throws ParseException {
         if ( userService.isUserFullyAuthorized( ) ) {
             UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
             return new ResponseEntity<>(virementService.effectuerVirement(newVirementDto,myUserDetails.getUser().getId( )), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
+    }
+
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ACTIVE_CLIENT})
+    @GetMapping("/get-benificiares-client")
+    public ResponseEntity<?> getBenificiaries() {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            return new ResponseEntity<>(clientService.consulterTousLesBenificiaires(myUserDetails.getUser().getId()), HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
     }

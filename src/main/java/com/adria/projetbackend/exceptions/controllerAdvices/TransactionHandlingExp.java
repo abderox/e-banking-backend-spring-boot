@@ -4,6 +4,7 @@ package com.adria.projetbackend.exceptions.controllerAdvices;
  */
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.DomesticBenifOnlyExp;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.IllegitimateToMakeTransfers;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBenificException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NotValidDateExp;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,15 @@ public class TransactionHandlingExp {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ApiError handleException(NotValidDateExp ex) {
+        return new ApiError(HttpStatus.NOT_FOUND, ex.getMessage( ));
+    }
+
+
+    @ExceptionHandler(value
+            = IllegitimateToMakeTransfers.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ApiError handleException(IllegitimateToMakeTransfers ex) {
         return new ApiError(HttpStatus.NOT_FOUND, ex.getMessage( ));
     }
 }

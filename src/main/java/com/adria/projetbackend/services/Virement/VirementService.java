@@ -1,15 +1,16 @@
 package com.adria.projetbackend.services.Virement;
 
 import com.adria.projetbackend.dtos.NewVirementDto;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.IllegitimateToMakeTransfers;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBenificException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NotValidDateExp;
-import com.adria.projetbackend.models.Benificiaire;
-import com.adria.projetbackend.models.Compte;
-import com.adria.projetbackend.models.Transaction;
-import com.adria.projetbackend.models.Virement;
+import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.repositories.VirementRepository;
 import com.adria.projetbackend.services.Benificiare.IBenificiareService;
+import com.adria.projetbackend.services.Client.IClientServices;
 import com.adria.projetbackend.services.Compte.ICompteService;
+import com.adria.projetbackend.services.Email.EmailDetails;
+import com.adria.projetbackend.services.Email.EmailService;
 import com.adria.projetbackend.services.Transaction.ITransactionService;
 import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import com.adria.projetbackend.utils.enums.TypeTransaction;
@@ -38,17 +39,25 @@ public class VirementService implements IVirementService {
     @Autowired
     IBenificiareService benificiareService;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    IClientServices clientService;
+
 
     @Transactional
     public NewVirementDto effectuerVirement(NewVirementDto newVirementDto, Long idClient) throws ParseException {
+
+        Compte myCompte = compteService.consulterCompteByRibAndClientId(newVirementDto.getRibEmetteur(), idClient);
+        if(!myCompte.isInclusVirement()) throw new IllegitimateToMakeTransfers("TRANSFER OPERATION IS NOT ALLOWED FOR THIS ACCOUNT");
 
         Benificiaire benificiaire = benificiareService.consulterBenificiaireByRib(newVirementDto.getRibBenificiaire( ), idClient);
 
         Transaction tx = new Transaction( );
 
-        Compte myCompte = compteService.consulterCompteByRibAndClientId(newVirementDto.getRibEmetteur(), idClient);
         Compte compte = compteService.consulterCompteByRib(benificiaire.getRib());
-
+        final double soldeInitial = myCompte.getSolde( );
 
         tx.setMontant(newVirementDto.getMontant( ));
         tx.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
@@ -68,9 +77,22 @@ public class VirementService implements IVirementService {
 
         if(today.equals(date_)) {
 
-            compteService.updateCompte(myCompte, newVirementDto.getMontant( ), TypeTransaction.RETRAIT);
+           double mySolde =  compteService.updateCompte(myCompte, newVirementDto.getMontant( ), TypeTransaction.RETRAIT);
             compteService.updateCompte(compte, newVirementDto.getMontant( ), TypeTransaction.DEPOT);
-
+            Client client = myCompte.getClient();
+            String bankName = client.getAgence().getBanque().getRaisonSociale();
+            String status
+                    = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
+                    "Hello again , we are just letting you know , that the operation of transferring is completed successfully  .\n\nFrom your account labelled with : "
+                            + myCompte.getIntituleCompte( ) + "\nIdentified with : " + myCompte.getRib( ) + "\nTo : " + benificiaire.getNom()
+                            + benificiaire.getRib() + "\n\nAmount : -" + newVirementDto.getMontant( ) + " MAD\n\nDate : "
+                            + new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( ))  + "\nBalance before the operation :"+soldeInitial +
+                            " MAD\nBalance after update : " + mySolde +" MAD"
+                            +"\n\nBest regards , \nBeta-"
+                            + bankName,
+                    "Hello from Beta-" + bankName + " ," +
+                            " " + client.getUsername( ) + "!",
+                    ""));
         }
 
         Virement virement = new Virement( );

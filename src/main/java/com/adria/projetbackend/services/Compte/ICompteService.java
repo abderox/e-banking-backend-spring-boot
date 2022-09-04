@@ -11,7 +11,7 @@ public interface ICompteService {
     Long getLatestRow();
     boolean existsByRib(String rib);
     Compte consulterCompteByRib(String rib);
-    void updateCompte(Compte compte, double amount, TypeTransaction type);
+    double updateCompte(Compte compte, double amount, TypeTransaction type);
     Compte consulterCompteByRibAndClientId(String rib, Long id);
 
     void majSolde(Compte compte, double montant);

@@ -98,6 +98,13 @@ public class ClientService implements IClientServices {
         }
     }
 
+
+    @Transactional(readOnly = true)
+    public List<BenificiareDto> consulterTousLesBenificiaires(Long clientId) {
+        return modelMapper.map(benificiareService.consulterTousLesBenificiaires(clientId), new TypeToken<List<BenificiareDto>>( ) {
+        }.getType( ));
+    }
+
     private Benificiaire convertToEntity(NewBenificiare benificiaire) {
         return modelMapper.map(benificiaire, Benificiaire.class);
     }

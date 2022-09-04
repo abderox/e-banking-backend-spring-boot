@@ -15,5 +15,6 @@ public class TransactionsClient {
     private String typeTransaction;
     private String dateExecution;
     private String referenceTransaction;
+    private boolean executed;
 
 }
