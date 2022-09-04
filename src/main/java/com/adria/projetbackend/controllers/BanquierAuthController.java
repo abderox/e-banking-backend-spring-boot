@@ -2,14 +2,11 @@ package com.adria.projetbackend.controllers;
 
 
 import com.adria.projetbackend.dtos.BanquierDetailsDto;
-import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.security.jwt.LoginRequest;
-import com.adria.projetbackend.security.jwt.LoginResponse;
 import com.adria.projetbackend.services.BackOffice.IBackOfficeServices;
 import com.adria.projetbackend.services.Banquier.IBanquierService;
-import com.adria.projetbackend.services.Email.EmailDetails;
-import com.adria.projetbackend.services.Email.EmailService;
+import com.adria.projetbackend.services.Jobs.ISchedOperations;
 import com.adria.projetbackend.services.RoleService;
 import com.adria.projetbackend.services.User.IUserService;
 import com.adria.projetbackend.services.User.UserDetailsImpl;
@@ -25,14 +22,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
 
 @RestController
 @Api(tags = "Banquier-auth")
@@ -58,11 +52,13 @@ public class BanquierAuthController {
     @Autowired
     IBackOfficeServices backOfficeService;
 
-
+    @Autowired
+    ISchedOperations schedOperations;
 
 
     @PostMapping(SecurityAuthConstants.SIGN_IN_URL_ADMIN)
     @ApiOperation(value = "This method is used to register a new client")
+
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
 
         try {
@@ -98,8 +94,6 @@ public class BanquierAuthController {
     }
 
 
-
-
     @GetMapping(SecurityAuthConstants.GET_BANKER_INFO)
     public ResponseEntity<?> getBanquierInfo() {
         UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
@@ -110,8 +104,12 @@ public class BanquierAuthController {
     }
 
 
+    @GetMapping("/validate-all-transfers")
+    public ResponseEntity validateAll() throws ParseException {
+        schedOperations.applyTxs();
+        return  ResponseEntity.ok( "ok");
 
-
+    }
 
 
 }

@@ -20,7 +20,6 @@ public class TransactionService implements ITransactionService {
     TransactionRepository transactionRepository;
 
 
-
     @Transactional
     public void effectuerTransaction(Transaction transaction) {
         if ( transaction.getMontant( ) < 0 ) {
@@ -32,6 +31,17 @@ public class TransactionService implements ITransactionService {
             throw new TransactionExp("ERROR WHILE SAVING TRANSACTION");
         }
 
+    }
+
+    public void updateTransaction(Transaction transaction, boolean executed) {
+        if ( transaction == null ) {
+            throw new TransactionExp("TRANSACTION NOT FOUND");
+        }
+        if ( transaction.getMontant( ) < 0 ) {
+            throw new BalanceMustBePositive("THE AMOUNT MUST BE POSITIVE");
+        }
+        transaction.setExecuted(executed);
+        transactionRepository.save(transaction);
     }
 
 
@@ -46,12 +56,12 @@ public class TransactionService implements ITransactionService {
     }
 
 
-    public List<Transaction> consulterToutesLesTransactions(){
-        return transactionRepository.findAll();
+    public List<Transaction> consulterToutesLesTransactions() {
+        return transactionRepository.findAll( );
     }
 
-    public List<Transaction> consulterToutesLesTransactionsNonExecuted(){
-        return transactionRepository.findAllByExecutedIsFalse();
+    public List<Transaction> consulterToutesLesTransactionsNonExecuted() {
+        return transactionRepository.findAllByExecutedIsFalse( );
     }
 
     @Override

@@ -11,4 +11,6 @@ public interface CompteRepository extends JpaRepository<Compte, Long> {
     boolean existsByClient_IdentifiantClient(String identifiantClient);
     boolean existsByRib(String rib);
     Compte findByRib(String rib);
+    Compte findByRibAndClient_Id(String rib, Long id);
+
 }

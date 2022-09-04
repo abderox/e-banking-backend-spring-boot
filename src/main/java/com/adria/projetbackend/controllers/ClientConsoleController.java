@@ -48,6 +48,8 @@ public class ClientConsoleController {
 
 
 
+
+
     @RolesAllowed(roles = {RolesE.ToString.ROLE_ACTIVE_CLIENT})
     @GetMapping("/get-accounts-client")
     public ResponseEntity<?> getAccounts() {
@@ -90,6 +92,8 @@ public class ClientConsoleController {
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
     }
+
+
 
 
 

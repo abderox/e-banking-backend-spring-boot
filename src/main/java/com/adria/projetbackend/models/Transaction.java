@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -26,6 +27,10 @@ public class Transaction {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreationTimestamp
     private Date dateCreation;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @UpdateTimestamp
+    private Date dateModification;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd")

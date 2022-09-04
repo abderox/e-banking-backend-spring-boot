@@ -12,6 +12,7 @@ public class NewVirementDto {
 
 
     private String ribBenificiaire;
+    private String ribEmetteur;
     private String dateExecution;
     private double montant;
     private String typeVirement;

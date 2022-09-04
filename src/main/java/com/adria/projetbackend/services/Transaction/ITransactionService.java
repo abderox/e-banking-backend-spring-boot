@@ -11,6 +11,7 @@ public interface ITransactionService {
     List<Transaction> consulterTransactions(String rib);
     List<Transaction> consulterToutesLesTransactions();
     List<Transaction> consulterToutesLesTransactionsNonExecuted();
+    void updateTransaction(Transaction transaction, boolean executed);
     Long getLatestRow();
 
 }

@@ -4,6 +4,7 @@ import com.adria.projetbackend.dtos.NewVirementDto;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBenificException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NotValidDateExp;
 import com.adria.projetbackend.models.Benificiaire;
+import com.adria.projetbackend.models.Compte;
 import com.adria.projetbackend.models.Transaction;
 import com.adria.projetbackend.models.Virement;
 import com.adria.projetbackend.repositories.VirementRepository;
@@ -45,26 +46,32 @@ public class VirementService implements IVirementService {
 
         Transaction tx = new Transaction( );
 
+        Compte myCompte = compteService.consulterCompteByRibAndClientId(newVirementDto.getRibEmetteur(), idClient);
+        Compte compte = compteService.consulterCompteByRib(benificiaire.getRib());
+
+
         tx.setMontant(newVirementDto.getMontant( ));
         tx.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
                 , idClient.toString( ), TypeTransaction.VIREMENT));
         tx.setType(TypeTransaction.VIREMENT);
-        tx.setCompte(compteService.consulterCompteByRib(newVirementDto.getRibBenificiaire()));
+        tx.setCompte(myCompte);
         tx.setDateExecution(new SimpleDateFormat("yyyy-MM-dd").parse(newVirementDto.getDateExecution( )));
 
-        // ? start checks if the date is valid
+
         String today = new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( ));
         String date_ = new SimpleDateFormat("MMM-dd-yyyy ").format(tx.getDateExecution( ));
         if(tx.getDateExecution().before(new Date()) && !date_.equals(today)) throw new NotValidDateExp("DATE EXECUTION MUST BE TODAY OR AFTER");
         tx.setExecuted(today.equals(date_));
-        // ? end checks if the date is valid
 
-
-        // ? wa validate the transaction
         transactionService.effectuerTransaction(tx);
 
-        // ! here we validate the transaction and update the account of the beneficiary .
-//        if(today.equals(date_)) transactionService.effectuerTransaction(tx);
+
+        if(today.equals(date_)) {
+
+            compteService.updateCompte(myCompte, newVirementDto.getMontant( ), TypeTransaction.RETRAIT);
+            compteService.updateCompte(compte, newVirementDto.getMontant( ), TypeTransaction.DEPOT);
+
+        }
 
         Virement virement = new Virement( );
 
