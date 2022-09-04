@@ -35,7 +35,7 @@ public class SchedApplyTxs implements ISchedOperations {
     private EmailService emailService;
 
 
-    @Scheduled(cron = "0 50 6 * * ?", zone = "Africa/Casablanca")
+    @Scheduled(cron = "0 57 18 * * ?", zone = "Africa/Casablanca")
     @Transactional
     public void applyTxs() {
         String today = new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( ));
