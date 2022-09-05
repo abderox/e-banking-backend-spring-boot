@@ -25,7 +25,8 @@ public interface IBackOfficeServices {
     Client consulterClientById(Long id);
     ClientRegistration ajouterNouveauClient(ClientRegistration clientRegistration,String codeAgence) throws ParseException;
     Client consulterClientByIdentifiant(String clientIdentity);
-    Compte addFirstAccount(NewCompteDto newCompteDto);
+    Compte addFirstAccount(NewCompteDto newCompteDto,String agenceCode);
+    Compte addAccount(NewCompteDto newCompteDto,String agenceCode);
     List<Transaction> getTransactionsOfClient(String clientIdentity);
     List<Compte> getAccountsOfClient(String clientIdentity);
     List<Transaction> consulterToutesLesTransactions(String identity , String codeAgence);

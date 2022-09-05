@@ -133,9 +133,23 @@ public class BackOfficeController {
 
     @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
     @PostMapping("/add-client-first-account")
+    public ResponseEntity<?> addClientFirstAccount(@RequestBody NewCompteDto newCompteDto) {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
+            return new ResponseEntity<>(backOfficeService.addFirstAccount(newCompteDto,agenceCode), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
+
+    }
+
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
+    @PostMapping("/add-client-account")
     public ResponseEntity<?> addClientAccount(@RequestBody NewCompteDto newCompteDto) {
         if ( userService.isUserFullyAuthorized( ) ) {
-            return new ResponseEntity<>(backOfficeService.addFirstAccount(newCompteDto), HttpStatus.OK);
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
+            return new ResponseEntity<>(backOfficeService.addAccount(newCompteDto,agenceCode), HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
 

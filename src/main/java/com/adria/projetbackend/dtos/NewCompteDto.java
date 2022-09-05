@@ -26,5 +26,7 @@ public class NewCompteDto {
 
     private String statusClient;
 
+    private String typeCompte;
+
 
 }

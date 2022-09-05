@@ -52,10 +52,12 @@ public class SchedApplyTxs implements ISchedOperations {
 
                         Compte compte = compteService.consulterCompteByRib(virement.getBenificiaire( ).getRib( ));
                         double mySolde = compteService.updateCompte(myCompte, transaction.getMontant( ), TypeTransaction.RETRAIT);
-                        compteService.updateCompte(compte, transaction.getMontant( ), TypeTransaction.DEPOT);
+                        double hisSolde = compteService.updateCompte(compte, transaction.getMontant( ), TypeTransaction.DEPOT);
 
                         Client client = myCompte.getClient( );
                         String bankName = client.getAgence( ).getBanque( ).getRaisonSociale( );
+                        String hisBank = compte.getClient( ).getAgence( ).getBanque( ).getRaisonSociale( );
+
                         String status
                                 = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
                                 "Hello again , we are just letting you know , that the operation of transferring is completed successfully  .\n\nFrom your account labelled with : "
@@ -69,6 +71,21 @@ public class SchedApplyTxs implements ISchedOperations {
                                         + bankName,
                                 "Hello from Beta-" + bankName + " ," +
                                         " " + client.getUsername( ) + "!",
+                                ""));
+
+
+                        String status_
+                                = emailService.sendSimpleMail(new EmailDetails(compte.getClient( ).getEmail( ),
+                                "Hello again , we are reaching you out to let you know that You are receiving a transfer ,following the transaction referenced by : "
+                                        +transaction.getReferenceTransaction()+".\n\nFrom account labelled with : "
+                                        + myCompte.getIntituleCompte( ) + "\nIdentified with : " + myCompte.getRib( ) + "\nTo : " + "Your account : "
+                                        + virement.getBenificiaire( ).getRib( ) + "\n\nAmount : +" + transaction.getMontant( ) + " MAD\n\nDate : "
+                                        + new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( )) +
+                                        " \nBalance after update : " + hisSolde + " MAD"
+                                        + "\n\nBest regards , \nBeta-"
+                                        + bankName,
+                                "Hello from Beta-" + hisBank + " ," +
+                                        " " + compte.getClient( ).getUsername( ) + "!",
                                 ""));
 
                     });

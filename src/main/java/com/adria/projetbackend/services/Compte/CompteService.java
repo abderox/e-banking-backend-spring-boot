@@ -4,6 +4,7 @@ import com.adria.projetbackend.exceptions.runTimeExpClasses.BalanceMustBePositiv
 import com.adria.projetbackend.models.Compte;
 import com.adria.projetbackend.repositories.CompteRepository;
 import com.adria.projetbackend.services.Transaction.ITransactionService;
+import com.adria.projetbackend.utils.constants.GlobalSettings;
 import com.adria.projetbackend.utils.enums.TypeTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,8 @@ public class CompteService implements ICompteService {
             throw new BalanceMustBePositive("WARNING : trying to update balance with a non positive value");
         if(compte.getSolde()<amount && type.equals(TypeTransaction.RETRAIT))
             throw new BalanceMustBePositive("WARNING : Withdrawal amount is greater than the balance");
+        if(compte.getSolde()<= GlobalSettings.MIN_BALANCE && type.equals(TypeTransaction.RETRAIT))
+            throw new BalanceMustBePositive("WARNING : YOUR BALANCE IS LESS THAN THE MINIMUM ALLOWED");
 
         switch (type) {
             case DEPOT:

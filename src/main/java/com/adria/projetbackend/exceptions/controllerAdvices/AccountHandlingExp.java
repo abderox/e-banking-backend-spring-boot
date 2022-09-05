@@ -45,6 +45,14 @@ public class AccountHandlingExp {
         return new ApiError(HttpStatus.CONFLICT, ex.getMessage( ));
     }
 
+    @ExceptionHandler(value
+            = InsufficientDepositException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ApiError handleException(InsufficientDepositException ex) {
+        return new ApiError(HttpStatus.CONFLICT, ex.getMessage( ));
+    }
+
 
 
 

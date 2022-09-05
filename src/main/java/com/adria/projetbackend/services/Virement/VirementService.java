@@ -13,6 +13,7 @@ import com.adria.projetbackend.services.Email.EmailDetails;
 import com.adria.projetbackend.services.Email.EmailService;
 import com.adria.projetbackend.services.Transaction.ITransactionService;
 import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
+import com.adria.projetbackend.utils.constants.GlobalSettings;
 import com.adria.projetbackend.utils.enums.TypeTransaction;
 import com.adria.projetbackend.utils.enums.TypeVirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +50,20 @@ public class VirementService implements IVirementService {
     @Transactional
     public NewVirementDto effectuerVirement(NewVirementDto newVirementDto, Long idClient) throws ParseException {
 
-        Compte myCompte = compteService.consulterCompteByRibAndClientId(newVirementDto.getRibEmetteur(), idClient);
-        if(!myCompte.isInclusVirement()) throw new IllegitimateToMakeTransfers("TRANSFER OPERATION IS NOT ALLOWED FOR THIS ACCOUNT");
+        Compte myCompte = compteService.consulterCompteByRibAndClientId(newVirementDto.getRibEmetteur( ), idClient);
+        if ( !myCompte.isInclusVirement( ) )
+            throw new IllegitimateToMakeTransfers("TRANSFER OPERATION IS NOT ALLOWED FOR THIS ACCOUNT");
+
+        if ( newVirementDto.getMontant( ) < GlobalSettings.MIN_TRANSFER_AMOUNT )
+            throw new IllegitimateToMakeTransfers("TRANSFER AMOUNT MUST BE GREATER THAN " + GlobalSettings.MIN_TRANSFER_AMOUNT);
+        if ( newVirementDto.getMontant( ) > GlobalSettings.MAX_TRANSFER_AMOUNT )
+            throw new IllegitimateToMakeTransfers("TRANSFER AMOUNT MUST BE LESS THAN " + GlobalSettings.MAX_TRANSFER_AMOUNT);
 
         Benificiaire benificiaire = benificiareService.consulterBenificiaireByRib(newVirementDto.getRibBenificiaire( ), idClient);
 
         Transaction tx = new Transaction( );
 
-        Compte compte = compteService.consulterCompteByRib(benificiaire.getRib());
+        Compte compte = compteService.consulterCompteByRib(benificiaire.getRib( ));
         final double soldeInitial = myCompte.getSolde( );
 
         tx.setMontant(newVirementDto.getMontant( ));
@@ -69,29 +76,47 @@ public class VirementService implements IVirementService {
 
         String today = new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( ));
         String date_ = new SimpleDateFormat("MMM-dd-yyyy ").format(tx.getDateExecution( ));
-        if(tx.getDateExecution().before(new Date()) && !date_.equals(today)) throw new NotValidDateExp("DATE EXECUTION MUST BE TODAY OR AFTER");
+        if ( tx.getDateExecution( ).before(new Date( )) && !date_.equals(today) )
+            throw new NotValidDateExp("DATE EXECUTION MUST BE TODAY OR AFTER");
         tx.setExecuted(today.equals(date_));
 
         transactionService.effectuerTransaction(tx);
 
 
-        if(today.equals(date_)) {
+        if ( today.equals(date_) ) {
 
-           double mySolde =  compteService.updateCompte(myCompte, newVirementDto.getMontant( ), TypeTransaction.RETRAIT);
-            compteService.updateCompte(compte, newVirementDto.getMontant( ), TypeTransaction.DEPOT);
-            Client client = myCompte.getClient();
-            String bankName = client.getAgence().getBanque().getRaisonSociale();
+            double mySolde = compteService.updateCompte(myCompte, newVirementDto.getMontant( ), TypeTransaction.RETRAIT);
+            double hisSolde = compteService.updateCompte(compte, newVirementDto.getMontant( ), TypeTransaction.DEPOT);
+            Client client = myCompte.getClient( );
+            String bankName = client.getAgence( ).getBanque( ).getRaisonSociale( );
+            String hisBank = compte.getClient( ).getAgence( ).getBanque( ).getRaisonSociale( );
+
+
             String status
                     = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
                     "Hello again , we are just letting you know , that the operation of transferring is completed successfully  .\n\nFrom your account labelled with : "
-                            + myCompte.getIntituleCompte( ) + "\nIdentified with : " + myCompte.getRib( ) + "\nTo : " + benificiaire.getNom()
-                            + benificiaire.getRib() + "\n\nAmount : -" + newVirementDto.getMontant( ) + " MAD\n\nDate : "
-                            + new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( ))  + "\nBalance before the operation :"+soldeInitial +
-                            " MAD\nBalance after update : " + mySolde +" MAD"
-                            +"\n\nBest regards , \nBeta-"
+                            + myCompte.getIntituleCompte( ) + "\nIdentified with : " + myCompte.getRib( ) + "\nTo : " + benificiaire.getNom( )
+                            + benificiaire.getRib( ) + "\n\nAmount : -" + newVirementDto.getMontant( ) + " MAD\n\nDate : "
+                            + new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( )) + "\nBalance before the operation :" + soldeInitial +
+                            " MAD\nBalance after update : " + mySolde + " MAD"
+                            + "\n\nBest regards , \nBeta-"
                             + bankName,
                     "Hello from Beta-" + bankName + " ," +
                             " " + client.getUsername( ) + "!",
+                    ""));
+
+            String status_
+                    = emailService.sendSimpleMail(new EmailDetails(compte.getClient( ).getEmail( ),
+                    "Hello again , we are reaching you out to let you know that You are receiving a transfer . following the transaction referenced by : "
+                            + tx.getReferenceTransaction( ) + "\n\nFrom account labelled with : "
+                            + myCompte.getIntituleCompte( ) + "\nIdentified with : " + myCompte.getRib( ) + "\nTo : " + "Your account : "
+                            + benificiaire.getRib( ) + "\n\nAmount : +" + newVirementDto.getMontant( ) + " MAD\n\nDate : "
+                            + new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( )) +
+                            " \nBalance after update : " + hisSolde + " MAD"
+                            + "\n\nBest regards , \nBeta-"
+                            + bankName,
+                    "Hello from Beta-" + hisBank + " ," +
+                            " " + compte.getClient( ).getUsername( ) + "!",
                     ""));
         }
 
