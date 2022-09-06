@@ -14,6 +14,7 @@ import java.util.Objects;
 @ToString
 @AllArgsConstructor @NoArgsConstructor
 public class Benificiaire {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_benificiare")
     private Long id;
@@ -22,6 +23,8 @@ public class Benificiaire {
     @Column(length = 24 , nullable = false)
     private String rib;
     private String intituleVirement;
+    @Column(length = 3, columnDefinition = "varchar(3) default 'O'")
+    private String periodicity;
 
     @OneToMany(mappedBy = "benificiaire")
     @ToString.Exclude

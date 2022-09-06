@@ -1,6 +1,7 @@
 package com.adria.projetbackend.services.Compte;
 
 import com.adria.projetbackend.exceptions.runTimeExpClasses.BalanceMustBePositive;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.InsufficientDepositException;
 import com.adria.projetbackend.models.Compte;
 import com.adria.projetbackend.repositories.CompteRepository;
 import com.adria.projetbackend.services.Transaction.ITransactionService;
@@ -73,7 +74,9 @@ public class CompteService implements ICompteService {
             throw new BalanceMustBePositive("WARNING : Withdrawal amount is greater than the balance");
         if(compte.getSolde()<= GlobalSettings.MIN_BALANCE && type.equals(TypeTransaction.RETRAIT))
             throw new BalanceMustBePositive("WARNING : YOUR BALANCE IS LESS THAN THE MINIMUM ALLOWED");
-
+        if ( amount < GlobalSettings.MIN_DEPOSIT_AMOUNT && type.equals(TypeTransaction.DEPOT) || compte.getSolde() < 0 ) {
+            throw new InsufficientDepositException("THE MINIMUM DEPOSIT AMOUNT IS : " + GlobalSettings.MIN_DEPOSIT_AMOUNT + "DH");
+        }
         switch (type) {
             case DEPOT:
                 compte.setSolde(compte.getSolde( ) + amount);

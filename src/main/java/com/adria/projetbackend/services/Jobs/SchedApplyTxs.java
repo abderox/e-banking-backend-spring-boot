@@ -62,7 +62,7 @@ public class SchedApplyTxs implements ISchedOperations {
                                 = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
                                 "Hello again , we are just letting you know , that the operation of transferring is completed successfully  .\n\nFrom your account labelled with : "
                                         + myCompte.getIntituleCompte( ) + "\nIdentified with : " + myCompte.getRib( ) + "\nTo : " + virement.getBenificiaire( ).getNom( )
-                                        + virement.getBenificiaire( ).getRib( ) + "\nAmount : -" + transaction.getMontant( ) + " MAD\n\n " +
+                                        + virement.getBenificiaire( ).getRib( ) + "\nAmount : -" + transaction.getMontant( ) + " MAD\n\n" +
                                         "Created on : " + new SimpleDateFormat("MMM-dd-yyyy ").format(transaction.getDateCreation( )) + "\n"
                                         + "Executed on : "
                                         + new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( )) + "\nBalance before the operation :" + soldeInitial +

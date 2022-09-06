@@ -2,6 +2,7 @@ package com.adria.projetbackend.controllers;
 
 
 import com.adria.projetbackend.dtos.ClientRegistration;
+import com.adria.projetbackend.dtos.CompteClientDto;
 import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.models.Client;
@@ -137,7 +138,7 @@ public class BackOfficeController {
         if ( userService.isUserFullyAuthorized( ) ) {
             UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
             String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
-            return new ResponseEntity<>(backOfficeService.addFirstAccount(newCompteDto,agenceCode), HttpStatus.OK);
+            return new ResponseEntity<>(backOfficeService.addFirstAccount(newCompteDto, agenceCode), HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
 
@@ -149,17 +150,24 @@ public class BackOfficeController {
         if ( userService.isUserFullyAuthorized( ) ) {
             UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
             String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
-            return new ResponseEntity<>(backOfficeService.addAccount(newCompteDto,agenceCode), HttpStatus.OK);
+            return new ResponseEntity<>(backOfficeService.addAccount(newCompteDto, agenceCode), HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
 
     }
 
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
+    @PostMapping("/update-account")
+    public ResponseEntity<?> updateAccount(@RequestBody CompteClientDto compteClientDto) {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
+            backOfficeService.majCompte(compteClientDto, agenceCode);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
 
-
-
-
-
+    }
 
 
 }

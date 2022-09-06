@@ -14,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 @SpringBootTest
 class ProjetBackendApplicationTests {
@@ -65,7 +68,36 @@ class ProjetBackendApplicationTests {
 
 //        System.out.println(generateRefTransaction("120","36",TypeTransaction.VIREMENT) );
 
+//        System.out.println("date : after a week "+updateDate(new Date( ),"W"));
+//        System.out.println("date : after a fortnight "+updateDate(new Date( ),"F"));
+//        System.out.println("date : after a month "+updateDate(new Date( ),"M"));
+
     }
 
+    public Date updateDate(Date date, String periodicity)
+    {
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate newLocalDate = null;
+        switch (periodicity)
+        {
+            case "D":
+                newLocalDate = localDate.plusDays(1);
+                break;
+            case "F" :
+                newLocalDate = localDate.plusWeeks(2 );
+                break;
+            case "M":
+                newLocalDate = localDate.plusMonths(1);
+                break;
+            case "W":
+                newLocalDate = localDate.plusWeeks(1);
+                break;
+            default:
+                newLocalDate = localDate;
+                break;
+        }
+        assert newLocalDate != null;
+        return Date.from(newLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
 
 }

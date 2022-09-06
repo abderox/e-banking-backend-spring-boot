@@ -9,6 +9,8 @@ import com.adria.projetbackend.utils.enums.TypeTransaction;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -83,5 +85,29 @@ public class UtilsMethods {
         } else {
             return uuid + idTransaction + idCompte;
         }
+    }
+
+    public static Date getDateAfterPeriod(Date date, String periodicity) {
+        LocalDate localDate = date.toInstant( ).atZone(ZoneId.systemDefault( )).toLocalDate( );
+        LocalDate newLocalDate = null;
+        switch (periodicity) {
+            case "D":
+                newLocalDate = localDate.plusDays(1);
+                break;
+            case "F":
+                newLocalDate = localDate.plusWeeks(2);
+                break;
+            case "M":
+                newLocalDate = localDate.plusMonths(1);
+                break;
+            case "W":
+                newLocalDate = localDate.plusWeeks(1);
+                break;
+            default:
+                newLocalDate = localDate;
+                break;
+        }
+        assert newLocalDate != null;
+        return Date.from(newLocalDate.atStartOfDay(ZoneId.systemDefault( )).toInstant( ));
     }
 }

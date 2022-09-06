@@ -120,14 +120,36 @@ public class VirementService implements IVirementService {
                     ""));
         }
 
+
         Virement virement = new Virement( );
 
         virement.setBenificiaire(benificiaire);
         virement.setTransaction(tx);
         virement.setType(TypeVirement.UNITAIRE);
 
-        // ? save virement
         virementRepository.save(virement);
+
+        if ( newVirementDto.isApplyPeriodicity( ) ) {
+            String periodicity = newVirementDto.getPeriodicity( );
+            Date nextExecutionDate = UtilsMethods.getDateAfterPeriod(tx.getDateExecution( ), periodicity);
+
+            Transaction tx_ = new Transaction( );
+            tx_.setMontant(newVirementDto.getMontant( ));
+            tx_.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
+                   , idClient.toString( ), TypeTransaction.VIREMENT));
+            tx_.setType(TypeTransaction.VIREMENT);
+            tx_.setCompte(myCompte);
+            tx_.setExecuted(false);
+            tx_.setDateExecution(nextExecutionDate);
+            transactionService.effectuerTransaction(tx_);
+
+            Virement virement2 = new Virement( );
+            virement2.setBenificiaire(benificiaire);
+            virement2.setTransaction(tx_);
+            virement2.setType(TypeVirement.UNITAIRE);
+            virementRepository.save(virement2);
+        }
+
         return newVirementDto;
     }
 

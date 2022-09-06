@@ -29,6 +29,7 @@ public class Virement {
     @JoinColumn(name = "id_benificiare")
     private Benificiaire benificiaire;
 
+
     @Override
     public boolean equals(Object o) {
         if ( this == o ) return true;

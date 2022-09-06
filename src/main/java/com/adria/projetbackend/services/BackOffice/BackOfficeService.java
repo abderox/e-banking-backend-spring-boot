@@ -6,11 +6,9 @@ package com.adria.projetbackend.services.BackOffice;
 
 import com.adria.projetbackend.dtos.ClientRegistration;
 import com.adria.projetbackend.dtos.ClientsDto;
+import com.adria.projetbackend.dtos.CompteClientDto;
 import com.adria.projetbackend.dtos.NewCompteDto;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.CustmerAlreadyExistsException;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.CustomerHasAccountException;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.InsufficientDepositException;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.*;
 import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.repositories.ClientRepository;
 import com.adria.projetbackend.repositories.CompteRepository;
@@ -190,7 +188,7 @@ public class BackOfficeService implements IBackOfficeServices {
 
 
     @Transactional
-    public Compte addFirstAccount(NewCompteDto newCompteDto,String agenceCode) {
+    public Compte addFirstAccount(NewCompteDto newCompteDto, String agenceCode) {
         Client client = consulterClientByIdentifiant(newCompteDto.getIdentifiantClient( ));
         Transaction transaction = new Transaction( );
 
@@ -215,6 +213,7 @@ public class BackOfficeService implements IBackOfficeServices {
         compte.setIntituleCompte("Compte courant");
         transaction.setCompte(compte);
         transaction.setMontant(newCompteDto.getSolde( ));
+        transaction.setExecuted(true);
         transaction.setDateExecution(new Date( ));
         transaction.setType(TypeTransaction.DEPOT);
         transaction.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
@@ -260,19 +259,19 @@ public class BackOfficeService implements IBackOfficeServices {
     }
 
     @Transactional
-    public Compte addAccount(NewCompteDto newCompteDto,String agenceCode) {
+    public Compte addAccount(NewCompteDto newCompteDto, String agenceCode) {
         Client client = consulterClientByIdentifiant(newCompteDto.getIdentifiantClient( ));
 
         if ( client == null )
             throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
 
-        if(!client.getAgence().getCode().equals(agenceCode))
+        if ( !client.getAgence( ).getCode( ).equals(agenceCode) )
             throw new NoSuchCustomerException("YOU HAVE NO ACCESS TO THIS AGENCY !");
 
-        if ( client.getStatus() == TypeStatus.DESACTIVE )
+        if ( client.getStatus( ) == TypeStatus.DESACTIVE )
             throw new CustomerHasAccountException("CUSTOMER IS NOT ACTIVE");
 
-        if(client.getComptes().size() > GlobalSettings.MAX_ACCOUNTS_PER_CLIENT)
+        if ( client.getComptes( ).size( ) > GlobalSettings.MAX_ACCOUNTS_PER_CLIENT )
             throw new CustomerHasAccountException("CUSTOMER HAS ALREADY MAXIMUM ACCOUNTS");
 
 
@@ -286,9 +285,11 @@ public class BackOfficeService implements IBackOfficeServices {
                 , (lastIdInDb + 1) + ""));
         compte.setIntituleCompte(newCompteDto.getTypeCompte( ));
 
-        Transaction transaction = new Transaction( );
+        Transaction transaction = null;
         if ( newCompteDto.getSolde( ) >= GlobalSettings.MIN_DEPOSIT_AMOUNT ) {
+            transaction = new Transaction( );
             transaction.setCompte(compte);
+            transaction.setExecuted(true);
             transaction.setMontant(newCompteDto.getSolde( ));
             transaction.setDateExecution(new Date( ));
             transaction.setType(TypeTransaction.DEPOT);
@@ -326,11 +327,8 @@ public class BackOfficeService implements IBackOfficeServices {
     }
 
     @Transactional(readOnly = true)
-    public List<Transaction> getTransactionsOfClient(String clientIdentity) {
-        Client client = consulterClientByIdentifiant(clientIdentity);
-        if ( client == null ) {
-            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
-        }
+    public List<Transaction> getTransactionsOfClient(Client client) {
+
         List<Compte> comptes = client.getComptes( );
         List<Transaction> transactions = new ArrayList<>( );
         for (Compte compte : comptes) {
@@ -340,35 +338,53 @@ public class BackOfficeService implements IBackOfficeServices {
     }
 
     @Transactional(readOnly = true)
-    public List<Compte> getAccountsOfClient(String clientIdentity) {
-        Client client = consulterClientByIdentifiant(clientIdentity);
+    public List<Compte> consulterToutesLesComptes(String identity, String agenceCode) {
+        Client client = consulterClientByIdentifiant(identity);
         if ( client == null ) {
             throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
         }
-        return client.getComptes( );
-    }
-
-    @Transactional(readOnly = true)
-    public List<Compte> consulterToutesLesComptes(String identity, String agenceCode) {
-        Client client = consulterClientByIdentifiant(identity);
         if ( !client.getAgence( ).getCode( ).equals(agenceCode) ) {
-            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST IN THIS AGENCY");
         }
-        return getAccountsOfClient(identity);
+        return client.getComptes( );
     }
 
     @Transactional(readOnly = true)
     public List<Transaction> consulterToutesLesTransactions(String clientIdentity, String codeAgence) {
         Client client = consulterClientByIdentifiant(clientIdentity);
         if ( client.getAgence( ).getCode( ).equals(codeAgence) ) {
-            return getTransactionsOfClient(clientIdentity);
+            return getTransactionsOfClient(client);
         } else {
-            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST IN THIS AGENCE");
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST IN THIS AGENCY");
         }
     }
 
     public boolean identifiantClientExists(String identifiantClient) {
         return clientRepository.existsByIdentifiantClient(identifiantClient);
+    }
+
+    @Transactional
+    public void majCompte(CompteClientDto compteClientDto, String agenceCode) {
+
+        Compte compte = compteService.consulterCompteByRib(compteClientDto.getRibCompte( ));
+
+        if ( compte == null )
+            throw new NoSuchAccountException("ACCOUNT WITH SUCH RIB DOES NOT EXIST");
+
+        if ( !compte.getClient( ).getAgence( ).getCode( ).equals(agenceCode) )
+            throw new NoSuchAccountException("YOU HAVE NO ACCESS TO THIS ACCOUNT");
+
+        Transaction transaction = new Transaction( );
+        transaction.setCompte(compte);
+        transaction.setMontant(compteClientDto.getMontant( ));
+        transaction.setDateExecution(new Date( ));
+        transaction.setType(TypeTransaction.DEPOT);
+        transaction.setExecuted(true);
+        transaction.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
+                , compte.getClient( ).getId( ).toString( ), TypeTransaction.DEPOT));
+        compteService.updateCompte(compte, compteClientDto.getMontant(), TypeTransaction.DEPOT);
+        transactionService.effectuerTransaction(transaction);
+
     }
 
 
