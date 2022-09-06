@@ -3,13 +3,15 @@ package com.adria.projetbackend.services.Jobs;
 
 import com.adria.projetbackend.dtos.CompteClient;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NotValidDateExp;
-import com.adria.projetbackend.models.Client;
-import com.adria.projetbackend.models.Compte;
+import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.services.Compte.ICompteService;
 import com.adria.projetbackend.services.Email.EmailDetails;
 import com.adria.projetbackend.services.Email.EmailService;
 import com.adria.projetbackend.services.Transaction.ITransactionService;
+import com.adria.projetbackend.services.Virement.IVirementService;
+import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import com.adria.projetbackend.utils.enums.TypeTransaction;
+import com.adria.projetbackend.utils.enums.TypeVirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class SchedApplyTxs implements ISchedOperations {
 
     @Autowired
     ICompteService compteService;
+
+    @Autowired
+    IVirementService virementService;
 
     @Autowired
     private EmailService emailService;
@@ -87,6 +92,8 @@ public class SchedApplyTxs implements ISchedOperations {
                                 "Hello from Beta-" + hisBank + " ," +
                                         " " + compte.getClient( ).getUsername( ) + "!",
                                 ""));
+
+                         virementService.virementAvecPeriodicite(transaction.getDateExecution(), transaction.getMontant(),myCompte, virement.getBenificiaire());
 
                     });
                 }

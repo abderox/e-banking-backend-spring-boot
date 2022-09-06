@@ -25,6 +25,8 @@ public class Benificiaire {
     private String intituleVirement;
     @Column(length = 3, columnDefinition = "varchar(3) default 'O'")
     private String periodicity;
+    @Column(columnDefinition = "boolean default false")
+    private boolean applyPeriodicity;
 
     @OneToMany(mappedBy = "benificiaire")
     @ToString.Exclude

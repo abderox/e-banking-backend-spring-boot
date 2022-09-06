@@ -16,5 +16,6 @@ public class NewBenificiare {
     private String nom;
     private String rib;
     private String intituleVirement;
+    private String periodicity;
 
 }

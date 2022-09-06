@@ -14,5 +14,6 @@ public class BenificiareDto {
     private String nomBenificiaire;
     private String intituleVirementBenificiaire;
     private String nature;
+    private String periodicity;
 
 }

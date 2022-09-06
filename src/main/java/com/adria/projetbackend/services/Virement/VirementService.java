@@ -130,13 +130,28 @@ public class VirementService implements IVirementService {
         virementRepository.save(virement);
 
         if ( newVirementDto.isApplyPeriodicity( ) ) {
-            String periodicity = newVirementDto.getPeriodicity( );
-            Date nextExecutionDate = UtilsMethods.getDateAfterPeriod(tx.getDateExecution( ), periodicity);
+            benificiareService.majBenificiaire(benificiaire,!benificiaire.getPeriodicity().equals("O"));
+            virementAvecPeriodicite(tx.getDateExecution(), tx.getMontant(),myCompte, benificiaire);
+        }
+
+        return newVirementDto;
+    }
+
+    public void saveVirement(Virement virement) {
+        virementRepository.save(virement);
+    }
+
+    public void virementAvecPeriodicite(Date currentDate, double montant,Compte myCompte,Benificiaire benificiaire)
+    {
+        if(!benificiaire.getPeriodicity().equals("O") && benificiaire.isApplyPeriodicity())
+        {
+            String periodicity = benificiaire.getPeriodicity();
+            Date nextExecutionDate = UtilsMethods.getDateAfterPeriod(currentDate,periodicity);
 
             Transaction tx_ = new Transaction( );
-            tx_.setMontant(newVirementDto.getMontant( ));
+            tx_.setMontant(montant);
             tx_.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
-                   , idClient.toString( ), TypeTransaction.VIREMENT));
+                    , myCompte.getClient().getId().toString(), TypeTransaction.VIREMENT));
             tx_.setType(TypeTransaction.VIREMENT);
             tx_.setCompte(myCompte);
             tx_.setExecuted(false);
@@ -147,10 +162,9 @@ public class VirementService implements IVirementService {
             virement2.setBenificiaire(benificiaire);
             virement2.setTransaction(tx_);
             virement2.setType(TypeVirement.UNITAIRE);
-            virementRepository.save(virement2);
+            saveVirement(virement2);
         }
 
-        return newVirementDto;
     }
 
 

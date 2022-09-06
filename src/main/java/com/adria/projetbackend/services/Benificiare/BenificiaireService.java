@@ -47,6 +47,16 @@ public class BenificiaireService implements IBenificiareService {
     }
 
 
+
+    public void majBenificiaire(Benificiaire benificiaire,boolean applyPeriodicity)
+    {
+        if(benificiaire == null)
+            throw new NoSuchBenificException("NO SUCH BENEFICIARY EXISTS ! PLEASE CHECK THE RIB PROVIDED.");
+        benificiaire.setApplyPeriodicity(applyPeriodicity);
+        benificiaireRepository.save(benificiaire);
+    }
+
+
     // ! To be reviewed
     public Benificiaire modifierBenificiaire(Long idBenificiaireAModifie, Benificiaire benificiaire) {
         Benificiaire benificiaire1 = benificiaireRepository.findById(idBenificiaireAModifie).get( );

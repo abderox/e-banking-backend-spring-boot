@@ -17,6 +17,6 @@ public class NewVirementDto {
     private double montant;
     private String typeVirement;
     private boolean applyPeriodicity;
-    private String periodicity;
+
 
 }

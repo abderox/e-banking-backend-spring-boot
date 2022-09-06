@@ -10,5 +10,6 @@ public interface IBenificiareService {
     boolean existsByRibAndClientId(String rib,Long id);
     Benificiaire consulterBenificiaireByRib(String rib,Long idClient);
     List<Benificiaire> consulterTousLesBenificiaires(Long idClient);
+    void majBenificiaire(Benificiaire benificiaire,boolean applyPeriodicity);
 
 }
