@@ -38,4 +38,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     boolean existsClientByTelephone(String telephone);
 
     boolean existsByNumPieceIdentite(String numPieceIdentite);
+
+    Client findByTelephone(String telephone);
 }

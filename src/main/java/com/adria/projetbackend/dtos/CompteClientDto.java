@@ -12,9 +12,9 @@ public class CompteClientDto {
 
     private String ribCompte;
     private String intituleCompte;
+    private String identifiantClient;
     private double solde;
-    private String lastName;
-    private String firstName;
+    private String telephone;
     private boolean  bloqued;
     private double montant;
 

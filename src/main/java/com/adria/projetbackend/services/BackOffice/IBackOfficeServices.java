@@ -27,7 +27,7 @@ public interface IBackOfficeServices {
     Compte addFirstAccount(NewCompteDto newCompteDto,String agenceCode);
     Compte addAccount(NewCompteDto newCompteDto,String agenceCode);
     List<Transaction> consulterToutesLesTransactions(String identity , String codeAgence);
-    List<Compte> consulterToutesLesComptes(String  identity, String agenceCode);
+    List<CompteClientDto> consulterToutesLesComptes(String telephone,String identity, String  agenceCode);
 
 
 }

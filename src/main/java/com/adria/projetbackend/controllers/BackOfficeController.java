@@ -122,12 +122,12 @@ public class BackOfficeController {
     }
 
 
-    @GetMapping("/get-accounts-client/{identity}")
-    public ResponseEntity<?> getAccountsClient(@PathVariable String identity) {
+    @GetMapping("/get-accounts-per-client/")
+    public ResponseEntity<?> getAccountsClient( @RequestParam(required = false)  String identity, @RequestParam(required = false) String telephone) {
         if ( userService.isUserFullyAuthorized( ) ) {
             UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
             String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
-            return new ResponseEntity<>(backOfficeService.consulterToutesLesComptes(identity, agenceCode), HttpStatus.OK);
+            return new ResponseEntity<>(backOfficeService.consulterToutesLesComptes(telephone,identity, agenceCode), HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
     }

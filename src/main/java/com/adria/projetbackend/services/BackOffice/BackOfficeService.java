@@ -338,15 +338,33 @@ public class BackOfficeService implements IBackOfficeServices {
     }
 
     @Transactional(readOnly = true)
-    public List<Compte> consulterToutesLesComptes(String identity, String agenceCode) {
-        Client client = consulterClientByIdentifiant(identity);
+    public List<CompteClientDto> consulterToutesLesComptes(String telephone,String identity, String  agenceCode) {
+
+        Client client = null;
+
+        if(identity!=null)
+        {
+             client = consulterClientByIdentifiant(identity);
+        }
+        else
+        {
+             client = consulterClientByTelephone(telephone);
+        }
+
+
         if ( client == null ) {
-            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER OR MOBILE DOES NOT EXIST");
         }
         if ( !client.getAgence( ).getCode( ).equals(agenceCode) ) {
             throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST IN THIS AGENCY");
         }
-        return client.getComptes( );
+        return modelMapper.map(client.getComptes( ), new TypeToken<List<CompteClientDto>>( ) {
+        }.getType( ));
+    }
+
+    @Transactional(readOnly = true)
+    public Client consulterClientByTelephone(String telephone) {
+        return clientRepository.findByTelephone(telephone);
     }
 
     @Transactional(readOnly = true)
