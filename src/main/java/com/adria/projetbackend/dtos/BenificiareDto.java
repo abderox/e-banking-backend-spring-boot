@@ -16,4 +16,6 @@ public class BenificiareDto {
     private String nature;
     private String periodicity;
 
+
+
 }

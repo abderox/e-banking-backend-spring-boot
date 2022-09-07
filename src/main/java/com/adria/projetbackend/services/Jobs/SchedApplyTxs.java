@@ -93,13 +93,15 @@ public class SchedApplyTxs implements ISchedOperations {
                                         " " + compte.getClient( ).getUsername( ) + "!",
                                 ""));
 
+                        if( virement.isPeriodic( ) )
+                        {
                          virementService.virementAvecPeriodicite(transaction.getDateExecution(), transaction.getMontant(),myCompte, virement.getBenificiaire());
+                        }
+
 
                     });
                 }
-
                 transactionService.updateTransaction(transaction, true);
-
             }
 
         });

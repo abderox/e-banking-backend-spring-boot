@@ -126,13 +126,22 @@ public class VirementService implements IVirementService {
         virement.setBenificiaire(benificiaire);
         virement.setTransaction(tx);
         virement.setType(TypeVirement.UNITAIRE);
-
+        virement.setPeriodic(newVirementDto.isApplyPeriodicity( ) );
         virementRepository.save(virement);
 
-        if ( newVirementDto.isApplyPeriodicity( ) ) {
+        if( newVirementDto.isApplyPeriodicity( ) ) {
+
+            if(!benificiaire.isApplyPeriodicity()) {
             benificiareService.majBenificiaire(benificiaire,!benificiaire.getPeriodicity().equals("O"));
-            virementAvecPeriodicite(tx.getDateExecution(), tx.getMontant(),myCompte, benificiaire);
+            }
+
+            if(!benificiaire.getPeriodicity().equals("O") && today.equals(date_))
+            {
+                virementAvecPeriodicite(tx.getDateExecution(), tx.getMontant(),myCompte, benificiaire);
+            }
         }
+
+
 
         return newVirementDto;
     }
@@ -162,6 +171,7 @@ public class VirementService implements IVirementService {
             virement2.setBenificiaire(benificiaire);
             virement2.setTransaction(tx_);
             virement2.setType(TypeVirement.UNITAIRE);
+            virement2.setPeriodic(true);
             saveVirement(virement2);
         }
 

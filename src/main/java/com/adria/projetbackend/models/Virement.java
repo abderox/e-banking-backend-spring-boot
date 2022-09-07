@@ -28,6 +28,8 @@ public class Virement {
     @ManyToOne
     @JoinColumn(name = "id_benificiare")
     private Benificiaire benificiaire;
+    @Column(columnDefinition = "boolean default false")
+    private boolean periodic;
 
 
     @Override
