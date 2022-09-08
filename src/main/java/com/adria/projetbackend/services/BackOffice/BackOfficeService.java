@@ -391,17 +391,31 @@ public class BackOfficeService implements IBackOfficeServices {
 
         if ( !compte.getClient( ).getAgence( ).getCode( ).equals(agenceCode) )
             throw new NoSuchAccountException("YOU HAVE NO ACCESS TO THIS ACCOUNT");
+        
+        if(compteClientDto.getMontant()<GlobalSettings.MIN_DEPOSIT_AMOUNT && compteClientDto.getMontant()>0)
+            throw new InsufficientDepositException("THE MINIMUM DEPOSIT AMOUNT IS : " + GlobalSettings.MIN_DEPOSIT_AMOUNT + "DH");
+        if(compteClientDto.getMontant()==0)
+        {
+            compte.setInclusVirement(compte.isInclusVirement( ));
+            compte.setBloqued(compteClientDto.isBloqued());
+            compteService.save(compte);
+        }
+        else
+        {
+            Transaction transaction = new Transaction( );
+            transaction.setCompte(compte);
+            transaction.setMontant(compteClientDto.getMontant( ));
+            transaction.setDateExecution(new Date( ));
+            transaction.setType(TypeTransaction.DEPOT);
+            transaction.setExecuted(true);
+            transaction.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
+                    , compte.getClient( ).getId( ).toString( ), TypeTransaction.DEPOT));
+            compte.setBloqued(compteClientDto.isBloqued());
+            compte.setInclusVirement(compte.isInclusVirement( ));
+            compteService.updateCompte(compte, compteClientDto.getMontant(), TypeTransaction.DEPOT);
+            transactionService.effectuerTransaction(transaction);
+        }
 
-        Transaction transaction = new Transaction( );
-        transaction.setCompte(compte);
-        transaction.setMontant(compteClientDto.getMontant( ));
-        transaction.setDateExecution(new Date( ));
-        transaction.setType(TypeTransaction.DEPOT);
-        transaction.setExecuted(true);
-        transaction.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
-                , compte.getClient( ).getId( ).toString( ), TypeTransaction.DEPOT));
-        compteService.updateCompte(compte, compteClientDto.getMontant(), TypeTransaction.DEPOT);
-        transactionService.effectuerTransaction(transaction);
 
     }
 

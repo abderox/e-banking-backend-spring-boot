@@ -13,10 +13,12 @@ public interface ICompteService {
     Compte consulterCompteByRib(String rib);
     double updateCompte(Compte compte, double amount, TypeTransaction type);
     Compte consulterCompteByRibAndClientId(String rib, Long id);
+    void save(Compte compte);
 
     void majSolde(Compte compte, double montant);
     Compte consulterCompte(Long id);
     List<Compte> consultercomptes();
+
 
 
 }

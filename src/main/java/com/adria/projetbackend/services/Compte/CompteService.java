@@ -60,6 +60,11 @@ public class CompteService implements ICompteService {
         return compteRepository.findByRibAndClient_Id(rib, id);
     }
 
+    @Override
+    public void save(Compte compte) {
+        compteRepository.save(compte);
+    }
+
     public Compte ajouterCompteV2(Compte compte) {
         if ( compte.getSolde( ) < 0 )
             throw new BalanceMustBePositive("Solde must be positive");

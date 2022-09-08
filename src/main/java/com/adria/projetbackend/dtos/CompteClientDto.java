@@ -12,6 +12,7 @@ public class CompteClientDto {
 
     private String ribCompte;
     private String intituleCompte;
+    private boolean inclusVirement;
     private String identifiantClient;
     private double solde;
     private String telephone;
