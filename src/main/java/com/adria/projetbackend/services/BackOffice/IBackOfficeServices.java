@@ -1,9 +1,6 @@
 package com.adria.projetbackend.services.BackOffice;
 
-import com.adria.projetbackend.dtos.ClientRegistration;
-import com.adria.projetbackend.dtos.ClientsDto;
-import com.adria.projetbackend.dtos.CompteClientDto;
-import com.adria.projetbackend.dtos.NewCompteDto;
+import com.adria.projetbackend.dtos.*;
 import com.adria.projetbackend.models.Client;
 import com.adria.projetbackend.models.Compte;
 import com.adria.projetbackend.models.Transaction;
@@ -28,6 +25,7 @@ public interface IBackOfficeServices {
     Compte addAccount(NewCompteDto newCompteDto,String agenceCode);
     List<Transaction> consulterToutesLesTransactions(String identity , String codeAgence);
     List<CompteClientDto> consulterToutesLesComptes(String telephone,String identity, String  agenceCode);
+    void editClient(EditClient editClient,String agenceCode);
 
 
 }

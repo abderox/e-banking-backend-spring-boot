@@ -4,10 +4,7 @@ package com.adria.projetbackend.services.BackOffice;
  * @autor abderox
  */
 
-import com.adria.projetbackend.dtos.ClientRegistration;
-import com.adria.projetbackend.dtos.ClientsDto;
-import com.adria.projetbackend.dtos.CompteClientDto;
-import com.adria.projetbackend.dtos.NewCompteDto;
+import com.adria.projetbackend.dtos.*;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.*;
 import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.repositories.ClientRepository;
@@ -33,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -360,6 +358,48 @@ public class BackOfficeService implements IBackOfficeServices {
         }
         return modelMapper.map(client.getComptes( ), new TypeToken<List<CompteClientDto>>( ) {
         }.getType( ));
+    }
+
+    @Override
+    public void editClient(EditClient editClient, String agenceCode) {
+        Client client = consulterClientByIdentifiant(editClient.getIdentifiantClient( ));
+        if ( client == null )
+            throw new NoSuchCustomerException("CUSTOMER WITH SUCH IDENTIFIER DOES NOT EXIST");
+
+        if ( !client.getAgence( ).getCode( ).equals(agenceCode) )
+            throw new NoSuchCustomerException("YOU HAVE NO ACCESS TO THIS AGENCY !");
+
+        client.setStatus(TypeStatus.getStatus(editClient.getStatusClient( )));
+
+        if(client.getStatus()!=TypeStatus.ACTIVE)
+        {
+            client.setRoles(new HashSet<>(Collections.singletonList(roleService.getRole(RolesE.ROLE_CLIENT))));
+        }
+        else {
+            client.setRoles(new HashSet<>(Collections.singletonList(roleService.getRole(RolesE.ROLE_ACTIVE_CLIENT))));
+            String status
+                    = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
+                    "Hello again , we are just letting you know , that your status is returned back 'activated' and you have have full access over the digital e-banking services  .\n\nFor any other information , consult your nearest agency !  ."
+                            + "\n\nBest regards , \nBeta-"
+                            + client.getAgence().getBanque().getRaisonSociale(),
+                    "Hello from Beta-" + client.getAgence().getBanque().getRaisonSociale() + " ," +
+                            " " + client.getUsername( ) + "!",
+                    ""));
+        }
+        if(client.getStatus()==TypeStatus.SUSPENDU)
+        {
+            String status
+                    = emailService.sendSimpleMail(new EmailDetails(client.getEmail( ),
+                    "Hello again , we are just letting you know , that you are suspended and have no longer access to your digital e-banking services  .\n\nPlease contact your bank to get more information about this matter ."
+                            + "\n\nBest regards , \nBeta-"
+                            + client.getAgence().getBanque().getRaisonSociale(),
+                    "Hello from Beta-" + client.getAgence().getBanque().getRaisonSociale() + " ," +
+                            " " + client.getUsername( ) + "!",
+                    ""));
+        }
+        clientRepository.save(client);
+
+
     }
 
     @Transactional(readOnly = true)

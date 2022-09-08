@@ -3,6 +3,7 @@ package com.adria.projetbackend.controllers;
 
 import com.adria.projetbackend.dtos.ClientRegistration;
 import com.adria.projetbackend.dtos.CompteClientDto;
+import com.adria.projetbackend.dtos.EditClient;
 import com.adria.projetbackend.dtos.NewCompteDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.models.Client;
@@ -163,6 +164,20 @@ public class BackOfficeController {
             UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
             String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
             backOfficeService.majCompte(compteClientDto, agenceCode);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
+
+    }
+
+
+    @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
+    @PostMapping("/edit-client")
+    public ResponseEntity<?> updateClient(@RequestBody EditClient editClient) {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+            String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );
+            backOfficeService.editClient(editClient, agenceCode);
             return new ResponseEntity<>(HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
