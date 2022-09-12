@@ -2,6 +2,7 @@ package com.adria.projetbackend.services.Client;
 
 import com.adria.projetbackend.dtos.*;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.DomesticBenifOnlyExp;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBenificException;
 import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerException;
 import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.repositories.ClientRepository;
@@ -95,6 +96,25 @@ public class ClientService implements IClientServices {
             benificiaire1.setNature("DOMESTIQUE");
             benificiareService.ajouterBenificiaire(benificiaire1);
             return benificiaire1;
+        }
+    }
+
+
+    @Transactional
+    public void modifierBenificiaire(Long clientId, NewBenificiare benificiaireReq) {
+        Client client = consulterClientById(clientId);
+        if ( client == null )
+            throw new NoSuchBenificException("CUSTOMER WITH THAT ID DOES NOT EXIST");
+        else {
+            Benificiaire benificiaire = benificiareService.consulterBenificiaireByRib(benificiaireReq.getRib(),clientId);
+            if ( benificiaire == null )
+                throw new NoSuchBenificException("NO SUCH BENIFICIAIRE EXISTS");
+            else {
+                benificiaire.setPeriodicity(benificiaireReq.getPeriodicity( ));
+                benificiaire.setIntituleVirement(benificiaireReq.getIntituleVirement( ));
+                benificiaire.setNom(benificiaireReq.getNom( ));
+                benificiareService.majBenificiaire(benificiaire,!benificiaire.getPeriodicity().equals("O") && benificiaireReq.isApplyPeriodicity());
+            }
         }
     }
 

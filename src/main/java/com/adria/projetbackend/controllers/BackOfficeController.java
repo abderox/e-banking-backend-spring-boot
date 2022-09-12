@@ -112,8 +112,8 @@ public class BackOfficeController {
 
 
     @RolesAllowed(roles = {RolesE.ToString.ROLE_ADMIN})
-    @GetMapping("/get-transactions-client/{identity}")
-    public ResponseEntity<?> getTransactionsClient(@PathVariable String identity) {
+    @GetMapping("/get-transactions-per-client")
+    public ResponseEntity<?> getTransactionsClient(@RequestParam(required = false)  String identity) {
         if ( userService.isUserFullyAuthorized( ) ) {
             UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
             String agenceCode = banquierService.getBanquier(myUserDetails.getUser( ).getId( )).getAgence( ).getCode( );

@@ -11,5 +11,5 @@ public interface IBenificiareService {
     Benificiaire consulterBenificiaireByRib(String rib,Long idClient);
     List<Benificiaire> consulterTousLesBenificiaires(Long idClient);
     void majBenificiaire(Benificiaire benificiaire,boolean applyPeriodicity);
-
+    void supprimerBenificiaire(Long benificiaireId);
 }

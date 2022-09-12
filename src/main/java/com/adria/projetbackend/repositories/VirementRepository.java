@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VirementRepository extends JpaRepository<Virement, Long> {
+    Virement findByTransaction_ReferenceTransaction(String transactionRef);
 }

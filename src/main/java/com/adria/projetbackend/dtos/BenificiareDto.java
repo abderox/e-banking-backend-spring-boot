@@ -15,6 +15,7 @@ public class BenificiareDto {
     private String intituleVirementBenificiaire;
     private String nature;
     private String periodicity;
+    private boolean applyPeriodicity;
 
 
 

@@ -12,4 +12,5 @@ public interface IVirementService {
     NewVirementDto effectuerVirement(NewVirementDto newVirementDto, Long idClient) throws ParseException;
     void saveVirement(Virement virement);
     void virementAvecPeriodicite(Date currentDate, double montant, Compte myCompte, Benificiaire benificiaire);
+    void modefierVirement(NewVirementDto newVirementDto, Long idClient) throws ParseException;
 }

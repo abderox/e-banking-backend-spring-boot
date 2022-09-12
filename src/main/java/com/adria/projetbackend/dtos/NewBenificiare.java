@@ -17,5 +17,6 @@ public class NewBenificiare {
     private String rib;
     private String intituleVirement;
     private String periodicity;
+    private boolean applyPeriodicity;
 
 }

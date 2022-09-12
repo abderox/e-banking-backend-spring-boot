@@ -1,9 +1,7 @@
 package com.adria.projetbackend.services.Virement;
 
 import com.adria.projetbackend.dtos.NewVirementDto;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.IllegitimateToMakeTransfers;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchBenificException;
-import com.adria.projetbackend.exceptions.runTimeExpClasses.NotValidDateExp;
+import com.adria.projetbackend.exceptions.runTimeExpClasses.*;
 import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.repositories.VirementRepository;
 import com.adria.projetbackend.services.Benificiare.IBenificiareService;
@@ -126,41 +124,70 @@ public class VirementService implements IVirementService {
         virement.setBenificiaire(benificiaire);
         virement.setTransaction(tx);
         virement.setType(TypeVirement.UNITAIRE);
-        virement.setPeriodic(newVirementDto.isApplyPeriodicity( ) );
+        virement.setPeriodic(newVirementDto.isApplyPeriodicity( ));
         virementRepository.save(virement);
 
-        if( newVirementDto.isApplyPeriodicity( ) ) {
+        if ( newVirementDto.isApplyPeriodicity( ) ) {
 
-            if(!benificiaire.isApplyPeriodicity()) {
-            benificiareService.majBenificiaire(benificiaire,!benificiaire.getPeriodicity().equals("O"));
+            if ( !benificiaire.isApplyPeriodicity( ) ) {
+                benificiareService.majBenificiaire(benificiaire, !benificiaire.getPeriodicity( ).equals("O"));
             }
 
-            if(!benificiaire.getPeriodicity().equals("O") && today.equals(date_))
-            {
-                virementAvecPeriodicite(tx.getDateExecution(), tx.getMontant(),myCompte, benificiaire);
+            if ( !benificiaire.getPeriodicity( ).equals("O") && today.equals(date_) ) {
+                virementAvecPeriodicite(tx.getDateExecution( ), tx.getMontant( ), myCompte, benificiaire);
             }
         }
-
 
 
         return newVirementDto;
     }
 
+
+    @Transactional
+    public void modefierVirement(NewVirementDto newVirementDto, Long idClient) throws ParseException {
+
+        Virement virement = virementRepository.findByTransaction_ReferenceTransaction(newVirementDto.getReferenceTransaction( ));
+        if ( virement == null )
+            throw new TransactionExp("VIREMENT NOT FOUND");
+        if ( !virement.getTransaction( ).getCompte( ).getClient( ).getId( ).equals(idClient) )
+            throw new TransactionExp("YOU ARE NOT ALLOWED TO MODIFY THIS VIREMENT");
+        if ( virement.getTransaction( ).isExecuted( ) )
+            throw new TransactionExp("CANNOT MODIFY EXECUTED VIREMENT");
+        if ( virement.getTransaction( ).getDateExecution( ).before(new Date( )) )
+            throw new TransactionExp("CANNOT MODIFY VIREMENT WITH DATE EXECUTION BEFORE TODAY");
+        if ( virement.getTransaction( ).getDateExecution( ).equals(new Date( )) )
+            throw new TransactionExp("THIS VIREMENT IS SHCEDULED FOR TODAY , CANNOT MODIFY IT");
+
+        String today = new SimpleDateFormat("MMM-dd-yyyy ").format(new Date( ));
+        Date toDate = new SimpleDateFormat("MMM-dd-yyyy ").parse(newVirementDto.getDateExecution( ));
+        String date_ = new SimpleDateFormat("MMM-dd-yyyy ").format(toDate);
+
+        if ( toDate.before(new Date( )) && !date_.equals(today) )
+            throw new NotValidDateExp("DATE EXECUTION MUST BE TODAY OR AFTER");
+        virement.setPeriodic(newVirementDto.isApplyPeriodicity( ));
+        virement.getTransaction( ).setDateExecution(toDate);
+        if(newVirementDto.getMontant()<GlobalSettings.MIN_TRANSFER_AMOUNT)
+            throw new BalanceMustBePositive("AMOUNT MUST BE GREATER THAN "+GlobalSettings.MIN_TRANSFER_AMOUNT+" MAD");
+        virement.getTransaction( ).setMontant(newVirementDto.getMontant( ));
+        transactionService.effectuerTransaction(virement.getTransaction( ));
+        virementRepository.save(virement);
+
+    }
+
+
     public void saveVirement(Virement virement) {
         virementRepository.save(virement);
     }
 
-    public void virementAvecPeriodicite(Date currentDate, double montant,Compte myCompte,Benificiaire benificiaire)
-    {
-        if(!benificiaire.getPeriodicity().equals("O") && benificiaire.isApplyPeriodicity())
-        {
-            String periodicity = benificiaire.getPeriodicity();
-            Date nextExecutionDate = UtilsMethods.getDateAfterPeriod(currentDate,periodicity);
+    public void virementAvecPeriodicite(Date currentDate, double montant, Compte myCompte, Benificiaire benificiaire) {
+        if ( !benificiaire.getPeriodicity( ).equals("O") && benificiaire.isApplyPeriodicity( ) ) {
+            String periodicity = benificiaire.getPeriodicity( );
+            Date nextExecutionDate = UtilsMethods.getDateAfterPeriod(currentDate, periodicity);
 
             Transaction tx_ = new Transaction( );
             tx_.setMontant(montant);
             tx_.setReferenceTransaction(UtilsMethods.generateRefTransaction(transactionService.getLatestRow( ).toString( )
-                    , myCompte.getClient().getId().toString(), TypeTransaction.VIREMENT));
+                    , myCompte.getClient( ).getId( ).toString( ), TypeTransaction.VIREMENT));
             tx_.setType(TypeTransaction.VIREMENT);
             tx_.setCompte(myCompte);
             tx_.setExecuted(false);
