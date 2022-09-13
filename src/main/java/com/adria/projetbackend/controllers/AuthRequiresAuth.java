@@ -56,7 +56,7 @@ public class AuthRequiresAuth {
 
 
     @ApiOperation(value = "This to send an OTP to the user")
-    @PostMapping(SecurityAuthConstants.SEND_OTP)
+    @GetMapping(SecurityAuthConstants.SEND_OTP)
     public ResponseEntity<?> sendOtp() {
         if ( userService.isUserFullyAuthorized( ) ) {
             try {
