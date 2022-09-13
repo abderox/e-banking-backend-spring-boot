@@ -79,7 +79,7 @@ public class AuthRequiresAuth {
                 UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
                 boolean res = userService.verifyOTP(userDetails.getUsername( ), request.getOtp( ));
                 if ( res ) {
-                    return new ResponseEntity<>(HttpStatus.OK);
+                    return new ResponseEntity<>(request.getOtp(),HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>(new ApiError(HttpStatus.BAD_REQUEST, "Otp is no valid"), HttpStatus.BAD_REQUEST);
                 }
@@ -99,7 +99,7 @@ public class AuthRequiresAuth {
             try {
                 UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
                 userService.updatePassword(userDetails.getUser().getId(),otpRequest.getPassword(),otpRequest.getOtp());
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>("pass-changed",HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(new ApiError(HttpStatus.BAD_REQUEST, e.getMessage( )), HttpStatus.BAD_REQUEST);
             }
