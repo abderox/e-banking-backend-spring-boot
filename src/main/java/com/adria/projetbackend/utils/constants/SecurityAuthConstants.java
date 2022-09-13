@@ -24,6 +24,8 @@ public class SecurityAuthConstants {
     public static final String VERIFY_URL_CLIENT = "/auth/verify-client";
     public static final String REFRESH_URL_CLIENT = "/auth/refresh-client";
     public static final String SIGN_OUT_URL_CLIENT = "/auth/sign-out-client";
-
     public static final String GET_BANKER_INFO = "/banker/info";
+    public static final String SEND_OTP = "/auth/send-otp";
+    public static final String VERIFY_OTP = "/auth/verify-otp";
+    public static final String UPDATE_PASSWORD = "/auth/update-password";
 }

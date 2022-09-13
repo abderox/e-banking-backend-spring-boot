@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 
 @Data
-@RedisHash
+@RedisHash("jwtToken")
 @AllArgsConstructor @NoArgsConstructor
 public class JwtToken {
 

@@ -80,13 +80,13 @@ public class ClientAuthController {
     }
 
 
-    @ApiOperation(value = "This method is used to logout a client")
-    @GetMapping(SecurityAuthConstants.SIGN_OUT_URL_CLIENT)
-    public ResponseEntity<?> logout() {
-        String  accessToken = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        redisRepository.delete(accessToken);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @ApiOperation(value = "This method is used to logout a client")
+//    @GetMapping(SecurityAuthConstants.SIGN_OUT_URL_CLIENT)
+//    public ResponseEntity<?> logout() {
+//        String  accessToken = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+//        redisRepository.delete(accessToken);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
 
 

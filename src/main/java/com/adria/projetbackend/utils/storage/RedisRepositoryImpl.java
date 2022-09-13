@@ -12,6 +12,8 @@ import javax.annotation.PostConstruct;
 public class RedisRepositoryImpl implements RedisRepository {
 
     private static final String KEY = "UserToken";
+    private static final String KEY_2 = "updatePassword";
+
     private RedisTemplate<String, Object> redisTemplate;
     private HashOperations hashOperations;
 
@@ -47,6 +49,20 @@ public class RedisRepositoryImpl implements RedisRepository {
         return findToken(token) != null;
     }
 
+    @Override
+    public void addOtp(Otp object) {
+        hashOperations.put(KEY_2,object.getOtp(),object);
+    }
+
+    @Override
+    public void deleteOtp(String otp) {
+        hashOperations.delete(KEY_2,otp);
+    }
+
+    @Override
+    public Otp findOtp(String otp) {
+        return (Otp) hashOperations.get(KEY_2,otp);
+    }
 
 
 }

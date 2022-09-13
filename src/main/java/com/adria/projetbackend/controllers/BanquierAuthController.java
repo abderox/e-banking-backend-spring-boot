@@ -86,12 +86,12 @@ public class BanquierAuthController {
 
     }
 
-    @GetMapping(SecurityAuthConstants.SIGN_OUT_URL_ADMIN)
-    public ResponseEntity<?> logout() {
-        String accessToken = (String) SecurityContextHolder.getContext( ).getAuthentication( ).getCredentials( );
-        redisRepository.delete(accessToken);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @GetMapping(SecurityAuthConstants.SIGN_OUT_URL_ADMIN)
+//    public ResponseEntity<?> logout() {
+//        String accessToken = (String) SecurityContextHolder.getContext( ).getAuthentication( ).getCredentials( );
+//        redisRepository.delete(accessToken);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
 
     @GetMapping(SecurityAuthConstants.GET_BANKER_INFO)

@@ -19,5 +19,6 @@ public interface IClientServices {
    boolean idExists(Long id);
    Client consulterClientById(Long id);
    void modifierBenificiaire(Long clientId, NewBenificiare benificiaireReq);
+   void updatePassword(Long clientId, String password);
 
 }

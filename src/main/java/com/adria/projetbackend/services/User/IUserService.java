@@ -15,5 +15,8 @@ public interface IUserService {
     Set<String> getAuthorities(String token) throws IOException;
     UserE findUserByEmail(String email);
     boolean isUserFullyAuthorized();
+    String sendOTP(String email);
+    boolean verifyOTP(String username, String otp);
+    void updatePassword(Long id, String password, String otp);
 
 }

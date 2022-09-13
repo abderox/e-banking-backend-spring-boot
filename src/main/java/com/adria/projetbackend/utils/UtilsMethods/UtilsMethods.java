@@ -14,11 +14,14 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UtilsMethods {
 
     private static final int len = 6;
     private static final String ZERO = "0";
+    private static final int OTP_LEN = 6;
 
     public static String generateClientId(String codeAgence, String idClient, String idBanque) {
         // ? format de identifiant client : codeAgence + randomUUID +idClient + idBanque
@@ -85,6 +88,42 @@ public class UtilsMethods {
         } else {
             return uuid + idTransaction + idCompte;
         }
+    }
+
+    public static String OTP()
+    {
+        String numbers = "0123456789";
+
+        Random rndm_method = new Random();
+
+        char[] otp = new char[OTP_LEN];
+
+        for (int i = 0; i < OTP_LEN; i++)
+        {
+            otp[i] =
+                    numbers.charAt(rndm_method.nextInt(numbers.length()));
+        }
+        return new String(otp);
+    }
+
+    public static boolean isValidPassword(String password)
+    {
+        String regex = "^(?=.*[0-9])"
+                + "(?=.*[a-z])(?=.*[A-Z])"
+                + "(?=.*[@#$%^&+=])"
+                + "(?=\\S+$).{8,20}$";
+
+
+        Pattern p = Pattern.compile(regex);
+
+        if (password == null) {
+            return false;
+        }
+
+        Matcher m = p.matcher(password);
+
+
+        return m.matches();
     }
 
     public static Date getDateAfterPeriod(Date date, String periodicity) {

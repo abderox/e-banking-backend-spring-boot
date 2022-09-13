@@ -7,9 +7,11 @@ import com.adria.projetbackend.exceptions.runTimeExpClasses.NoSuchCustomerExcept
 import com.adria.projetbackend.models.*;
 import com.adria.projetbackend.repositories.ClientRepository;
 import com.adria.projetbackend.services.Benificiare.IBenificiareService;
+import com.adria.projetbackend.utils.storage.RedisRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,12 @@ public class ClientService implements IClientServices {
 
     @Autowired
     IBenificiareService benificiareService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    RedisRepository redisRepository;
 
 
     public ClientDetailsDto getClientDto(Long id) {
@@ -114,6 +122,21 @@ public class ClientService implements IClientServices {
                 benificiaire.setIntituleVirement(benificiaireReq.getIntituleVirement( ));
                 benificiaire.setNom(benificiaireReq.getNom( ));
                 benificiareService.majBenificiaire(benificiaire,!benificiaire.getPeriodicity().equals("O") && benificiaireReq.isApplyPeriodicity());
+            }
+        }
+    }
+
+    @Override
+    public void updatePassword(Long clientId, String password) {
+        Client client = consulterClientById(clientId);
+        if ( client == null )
+            throw new NoSuchCustomerException("CUSTOMER WITH THAT ID DOES NOT EXIST");
+        else {
+            if(password.length() < 8)
+                throw new RuntimeException("PASSWORD MUST BE AT LEAST 8 CHARACTERS LONG");
+            else {
+                client.setPassword(passwordEncoder.encode(password));
+                clientRepository.save(client);
             }
         }
     }
