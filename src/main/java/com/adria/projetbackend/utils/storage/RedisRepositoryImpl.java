@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.util.Date;
 
 @Repository
 public class RedisRepositoryImpl implements RedisRepository {
@@ -62,6 +63,15 @@ public class RedisRepositoryImpl implements RedisRepository {
     @Override
     public Otp findOtp(String otp) {
         return (Otp) hashOperations.get(KEY_2,otp);
+    }
+
+    @Override
+    public void deleteAllUnusedOtp() {
+        hashOperations.entries(KEY_2).forEach((k,v)->{
+            Otp otp = (Otp) v;
+            System.out.println(otp);
+            if (((Otp) v).getDateEnd().before(new Date()) ) deleteOtp(otp.getOtp());
+        });
     }
 
 

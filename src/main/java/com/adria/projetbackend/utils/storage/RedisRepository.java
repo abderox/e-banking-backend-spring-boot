@@ -18,6 +18,8 @@ public interface RedisRepository {
 
     Otp findOtp(String otp);
 
+    void deleteAllUnusedOtp();
+
 
 
 
