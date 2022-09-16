@@ -20,6 +20,7 @@ public class LoginRequest {
     @NotEmpty(message = "email is required")
     @Email(message = "HINT : Try a valid email")
     private String email;
+    private String agent;
 
 
 

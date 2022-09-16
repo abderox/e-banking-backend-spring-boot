@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.Date;
 
 @RestController
 @Api(tags = "Banquier-auth")
@@ -77,7 +78,14 @@ public class BanquierAuthController {
             banquierInfo.setEmailUser(myUserDetails.getUsername( ));
             banquierInfo.setAccessToken(accessToken);
 
-            redisRepository.add(new JwtToken(accessToken, myUserDetails.getUsername( )));
+            redisRepository.add(new JwtToken(
+                    accessToken,
+                    myUserDetails.getUsername( ),
+                    loginRequest.getAgent( ),
+                    new Date(System.currentTimeMillis( ) + SecurityAuthConstants.EXPIRATION_TIME)));
+
+            banquierInfo.setAgents( redisRepository.userSessions(myUserDetails.getUsername()));
+
             return new ResponseEntity<>(banquierInfo, HttpStatus.OK);
 
         } catch (BadCredentialsException e) {

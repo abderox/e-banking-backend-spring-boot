@@ -26,6 +26,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @Api(tags = "CLient-auth")
 @RequestMapping(SecurityAuthConstants.API_URL_V1)
@@ -45,8 +47,6 @@ public class ClientAuthController {
 
     @Autowired
     RedisRepository redisRepository;
-
-
 
 
     @PostMapping(SecurityAuthConstants.SIGN_IN_URL_CLIENT)
@@ -70,7 +70,14 @@ public class ClientAuthController {
             clientInfo.setEmailUser(myUserDetails.getUsername( ));
             clientInfo.setAccessToken(accessToken);
 
-            redisRepository.add(new JwtToken(accessToken, myUserDetails.getUsername( )));
+
+            redisRepository.add(new JwtToken(
+                    accessToken,
+                    myUserDetails.getUsername( ),
+                    loginRequest.getAgent( ),
+                    new Date(System.currentTimeMillis( ) + SecurityAuthConstants.EXPIRATION_TIME)));
+
+            clientInfo.setAgents(redisRepository.userSessions(myUserDetails.getUsername( )));
             return new ResponseEntity<>(clientInfo, HttpStatus.OK);
 
         } catch (BadCredentialsException e) {
@@ -87,8 +94,6 @@ public class ClientAuthController {
 //        redisRepository.delete(accessToken);
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
-
-
 
 
 }

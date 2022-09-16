@@ -28,4 +28,5 @@ public class SecurityAuthConstants {
     public static final String SEND_OTP = "/auth/send-otp";
     public static final String VERIFY_OTP = "/auth/verify-otp";
     public static final String UPDATE_PASSWORD = "/auth/update-password";
+    public static final long EXPIRATION_TIME = 3900000; // 1 hour
 }

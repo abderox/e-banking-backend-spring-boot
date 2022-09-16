@@ -17,4 +17,10 @@ public class SchedRedisOps implements IRedisOperations {
     public void deleteAllUnusedOtp() {
         redisRepository.deleteAllUnusedOtp();
     }
+
+    @Scheduled(cron = "0 15 2 * * ?", zone = "Africa/Casablanca")
+    @Override
+    public void verifyJwtExpiration() {
+        redisRepository.checkValidJwts();
+    }
 }

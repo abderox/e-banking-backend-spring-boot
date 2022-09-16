@@ -104,7 +104,6 @@ public class UserService implements IUserService {
         List<String> auth__ = Arrays.asList(auth.split(","));
         auth__ = auth__.stream( ).filter(role -> role.contains("name") && role.contains("ROLE")).map(role -> role.replace("name=", "").replace(")", "")).collect(Collectors.toList( ));
         return new HashSet<>(auth__);
-
     }
 
     @Override

@@ -7,10 +7,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public class RedisRepositoryImpl implements RedisRepository {
+
+
+    // ? redis-cli FLUSHALL to delete all keys in redis database
 
     private static final String KEY = "UserToken";
     private static final String KEY_2 = "updatePassword";
@@ -26,23 +31,23 @@ public class RedisRepositoryImpl implements RedisRepository {
 
     // ! I love this annotation
     @PostConstruct
-    private void init(){
-        hashOperations = redisTemplate.opsForHash();
+    private void init() {
+        hashOperations = redisTemplate.opsForHash( );
     }
 
     @Override
     public void add(JwtToken object) {
-        hashOperations.put(KEY,object.getToken(),object.getUsername());
+        hashOperations.put(KEY, object.getToken( ), object);
     }
 
     @Override
     public void delete(String token) {
-        hashOperations.delete(KEY,token);
+        hashOperations.delete(KEY, token);
     }
 
     @Override
     public JwtToken findToken(String token) {
-        return new JwtToken( token,(String) hashOperations.get(KEY,token));
+        return (JwtToken) hashOperations.get(KEY, token);
     }
 
     @Override
@@ -51,26 +56,65 @@ public class RedisRepositoryImpl implements RedisRepository {
     }
 
     @Override
+    public List<String> userSessions(String username) {
+        List<String> list = new ArrayList<>( );
+        hashOperations.entries(KEY).forEach((k, v) -> {
+            JwtToken jwtToken = (JwtToken) v;
+            if ( jwtToken.getUsername( ).equals(username) ) {
+                list.add(jwtToken.getAgent( ));
+            }
+        });
+        return list;
+
+    }
+
+
+
+    @Override
     public void addOtp(Otp object) {
-        hashOperations.put(KEY_2,object.getOtp(),object);
+        hashOperations.put(KEY_2, object.getOtp( ), object);
     }
 
     @Override
     public void deleteOtp(String otp) {
-        hashOperations.delete(KEY_2,otp);
+        hashOperations.delete(KEY_2, otp);
     }
 
     @Override
     public Otp findOtp(String otp) {
-        return (Otp) hashOperations.get(KEY_2,otp);
+        return (Otp) hashOperations.get(KEY_2, otp);
     }
 
     @Override
     public void deleteAllUnusedOtp() {
-        hashOperations.entries(KEY_2).forEach((k,v)->{
+        hashOperations.entries(KEY_2).forEach((k, v) -> {
             Otp otp = (Otp) v;
             System.out.println(otp);
-            if (((Otp) v).getDateEnd().before(new Date()) ) deleteOtp(otp.getOtp());
+            if ( ((Otp) v).getDateEnd( ).before(new Date( )) ) deleteOtp(otp.getOtp( ));
+        });
+    }
+
+    @Override
+    public void deleteAllUnusedJwts() {
+        hashOperations.entries(KEY).forEach((k, v) -> {
+            delete(k.toString( ));
+        });
+    }
+
+    // TODO : dev purpose only
+    public void checkAllJwts() {
+        hashOperations.entries(KEY).forEach((k, v) -> {
+            System.out.println(v);
+            System.out.println(k);
+        });
+    }
+
+    @Override
+    public void checkValidJwts() {
+        hashOperations.entries(KEY).forEach((k, v) -> {
+            JwtToken jwtToken = (JwtToken) v;
+            System.out.println("jwtToken : "+jwtToken);
+            if ( jwtToken.getExpirationDate( ).before(new Date( )) ) delete(k.toString( ));
         });
     }
 
