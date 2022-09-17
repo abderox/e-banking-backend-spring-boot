@@ -18,6 +18,7 @@ public class NewVirementDto {
     private String typeVirement;
     private boolean applyPeriodicity;
     private String referenceTransaction;
+    private String otp;
 
 
 }

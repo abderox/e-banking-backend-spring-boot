@@ -88,7 +88,7 @@ public class ClientConsoleController {
     public ResponseEntity<?> makeTransfer(@RequestBody NewVirementDto newVirementDto) throws ParseException {
         if ( userService.isUserFullyAuthorized( ) ) {
             UserDetailsImpl myUserDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
-            return new ResponseEntity<>(virementService.effectuerVirement(newVirementDto,myUserDetails.getUser().getId( )), HttpStatus.OK);
+            return new ResponseEntity<>(virementService.effectuerVirement(newVirementDto,myUserDetails.getUser().getId( ),myUserDetails.getUsername()), HttpStatus.OK);
         } else
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Your token may be expired try sign in once again !"), HttpStatus.UNAUTHORIZED);
     }

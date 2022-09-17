@@ -10,10 +10,12 @@ import com.adria.projetbackend.services.Compte.ICompteService;
 import com.adria.projetbackend.services.Email.EmailDetails;
 import com.adria.projetbackend.services.Email.EmailService;
 import com.adria.projetbackend.services.Transaction.ITransactionService;
+import com.adria.projetbackend.services.User.IUserService;
 import com.adria.projetbackend.utils.UtilsMethods.UtilsMethods;
 import com.adria.projetbackend.utils.constants.GlobalSettings;
 import com.adria.projetbackend.utils.enums.TypeTransaction;
 import com.adria.projetbackend.utils.enums.TypeVirement;
+import com.adria.projetbackend.utils.storage.RedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,9 +46,23 @@ public class VirementService implements IVirementService {
     @Autowired
     IClientServices clientService;
 
+    @Autowired
+    IUserService userService;
+
+    @Autowired
+    RedisRepository redisRepository;
+
 
     @Transactional
-    public NewVirementDto effectuerVirement(NewVirementDto newVirementDto, Long idClient) throws ParseException {
+    public NewVirementDto effectuerVirement(NewVirementDto newVirementDto, Long idClient, String username) throws ParseException {
+
+        if(!userService.verifyOTP(username,newVirementDto.getOtp()))
+        {
+            throw new OtpNotValidException("OTP provided is not valid !");
+        }
+        else {
+            redisRepository.deleteOtp(newVirementDto.getOtp());
+        }
 
         Compte myCompte = compteService.consulterCompteByRibAndClientId(newVirementDto.getRibEmetteur( ), idClient);
         if ( !myCompte.isInclusVirement( ) )
