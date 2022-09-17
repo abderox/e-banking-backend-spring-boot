@@ -5,7 +5,6 @@ import com.adria.projetbackend.dtos.BanquierDetailsDto;
 import com.adria.projetbackend.dtos.ClientDetailsDto;
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.security.jwt.LoginRequest;
-import com.adria.projetbackend.security.jwt.LoginResponse;
 import com.adria.projetbackend.services.BackOffice.IBackOfficeServices;
 import com.adria.projetbackend.services.Client.IClientServices;
 import com.adria.projetbackend.services.RoleService;
@@ -14,6 +13,7 @@ import com.adria.projetbackend.services.User.UserDetailsImpl;
 import com.adria.projetbackend.utils.constants.SecurityAuthConstants;
 import com.adria.projetbackend.utils.storage.JwtToken;
 import com.adria.projetbackend.utils.storage.RedisRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,10 +78,12 @@ public class ClientAuthController {
                     new Date(System.currentTimeMillis( ) + SecurityAuthConstants.EXPIRATION_TIME)));
 
             clientInfo.setAgents(redisRepository.userSessions(myUserDetails.getUsername( )));
+            clientInfo.setSessions(redisRepository.getAllActiveSessions(myUserDetails.getUsername( )));
             return new ResponseEntity<>(clientInfo, HttpStatus.OK);
 
-        } catch (BadCredentialsException e) {
-            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage( )), HttpStatus.UNAUTHORIZED);
+        } catch (BadCredentialsException | JsonProcessingException e) {
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage( )+
+                    " ! Or something went wrong , try to re-insert your credentials or change the agent if correct ."), HttpStatus.UNAUTHORIZED);
         }
 
     }

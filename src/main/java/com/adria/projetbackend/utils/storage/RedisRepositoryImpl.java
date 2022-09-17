@@ -1,15 +1,15 @@
 package com.adria.projetbackend.utils.storage;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class RedisRepositoryImpl implements RedisRepository {
@@ -68,8 +68,6 @@ public class RedisRepositoryImpl implements RedisRepository {
 
     }
 
-
-
     @Override
     public void addOtp(Otp object) {
         hashOperations.put(KEY_2, object.getOtp( ), object);
@@ -113,9 +111,26 @@ public class RedisRepositoryImpl implements RedisRepository {
     public void checkValidJwts() {
         hashOperations.entries(KEY).forEach((k, v) -> {
             JwtToken jwtToken = (JwtToken) v;
-            System.out.println("jwtToken : "+jwtToken);
+            System.out.println("jwtToken : " + jwtToken);
             if ( jwtToken.getExpirationDate( ).before(new Date( )) ) delete(k.toString( ));
         });
+    }
+
+    @Override
+    public String getAllActiveSessions(String username) throws JsonProcessingException {
+        List<Map<String, String>> list = new ArrayList<>( );
+
+        hashOperations.entries(KEY).forEach((k, v) -> {
+            JwtToken jwtToken = (JwtToken) v;
+            if ( jwtToken.getUsername( ).equals(username) ) {
+                Map<String, String> map = new HashMap<>( );
+                map.put("agent", jwtToken.getAgent( ));
+                map.put("token", jwtToken.getToken( ));
+                map.put("expirationDate", jwtToken.getExpirationDate( ).toString( ));
+                list.add(map);
+            }
+        });
+            return new ObjectMapper( ).writeValueAsString(list);
     }
 
 

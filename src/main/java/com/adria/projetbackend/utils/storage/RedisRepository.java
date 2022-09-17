@@ -1,6 +1,8 @@
 package com.adria.projetbackend.utils.storage;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.List;
 
 public interface RedisRepository {
@@ -28,6 +30,8 @@ public interface RedisRepository {
     void checkAllJwts();
 
     void checkValidJwts();
+
+    String getAllActiveSessions(String username) throws JsonProcessingException;
 
 
 

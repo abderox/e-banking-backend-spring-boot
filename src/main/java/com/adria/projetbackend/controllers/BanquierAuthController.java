@@ -13,6 +13,7 @@ import com.adria.projetbackend.services.User.UserDetailsImpl;
 import com.adria.projetbackend.utils.constants.SecurityAuthConstants;
 import com.adria.projetbackend.utils.storage.JwtToken;
 import com.adria.projetbackend.utils.storage.RedisRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,11 +86,13 @@ public class BanquierAuthController {
                     new Date(System.currentTimeMillis( ) + SecurityAuthConstants.EXPIRATION_TIME)));
 
             banquierInfo.setAgents( redisRepository.userSessions(myUserDetails.getUsername()));
+            banquierInfo.setSessions(redisRepository.getAllActiveSessions(myUserDetails.getUsername( )));
 
             return new ResponseEntity<>(banquierInfo, HttpStatus.OK);
 
-        } catch (BadCredentialsException e) {
-            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage( )), HttpStatus.UNAUTHORIZED);
+        } catch (BadCredentialsException | JsonProcessingException e) {
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage( )+
+                    " ! Or something went wrong , try to re-insert your credentials or change the agent if correct ."), HttpStatus.UNAUTHORIZED);
         }
 
     }

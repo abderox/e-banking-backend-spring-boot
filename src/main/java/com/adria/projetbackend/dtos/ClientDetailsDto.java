@@ -22,5 +22,6 @@ public class ClientDetailsDto {
     private String accessToken;
     private String bankName;
     private List <String> agents;
+    private String sessions;
 
 }

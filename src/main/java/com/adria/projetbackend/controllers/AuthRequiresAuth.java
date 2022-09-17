@@ -3,7 +3,7 @@ package com.adria.projetbackend.controllers;
 
 import com.adria.projetbackend.exceptions.ApiError;
 import com.adria.projetbackend.security.jwt.LoginRequest;
-import com.adria.projetbackend.security.jwt.LoginResponse;
+import com.adria.projetbackend.security.jwt.LogoutSession;
 import com.adria.projetbackend.security.otp.OtpRequest;
 import com.adria.projetbackend.services.BackOffice.IBackOfficeServices;
 import com.adria.projetbackend.services.RoleService;
@@ -41,17 +41,29 @@ public class AuthRequiresAuth {
     @ApiOperation(value = "This method is used to logout a banker")
     @GetMapping(SecurityAuthConstants.SIGN_OUT_URL_ADMIN)
     public ResponseEntity<?> logoutAdmin() {
-        String accessToken = (String) SecurityContextHolder.getContext( ).getAuthentication( ).getCredentials( );
-        redisRepository.delete(accessToken);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+            try {
+                String accessToken = (String) SecurityContextHolder.getContext( ).getAuthentication( ).getCredentials( );
+                redisRepository.delete(accessToken);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getMessage( )), HttpStatus.UNAUTHORIZED);
+            }
+
     }
 
     @ApiOperation(value = "This method is used to logout a client")
     @GetMapping(SecurityAuthConstants.SIGN_OUT_URL_CLIENT)
     public ResponseEntity<?> logoutClient() {
-        String accessToken = (String) SecurityContextHolder.getContext( ).getAuthentication( ).getCredentials( );
-        redisRepository.delete(accessToken);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+            try {
+                String accessToken = (String) SecurityContextHolder.getContext( ).getAuthentication( ).getCredentials( );
+                redisRepository.delete(accessToken);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, e.getMessage( )), HttpStatus.UNAUTHORIZED);
+            }
+
     }
 
 
@@ -105,6 +117,38 @@ public class AuthRequiresAuth {
             }
         } else {
             return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "YOU ARE NOT AUTHORIZED ! TRY TO LOGIN FIRST ."), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+
+    @ApiOperation(value = "Get active sessions")
+    @GetMapping(SecurityAuthConstants.GET_ACTIVE_SESSIONS)
+    public ResponseEntity<?> getActiveSessions() {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            try {
+                UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext( ).getAuthentication( ).getPrincipal( );
+                return new ResponseEntity<>(redisRepository.getAllActiveSessions(userDetails.getUsername()),HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(new ApiError(HttpStatus.BAD_REQUEST, e.getMessage( )), HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "YOU ARE NOT AUTHORIZED ! TRY TO LOGIN FIRST ."), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @ApiOperation(value = "This method is used to logout from active sessions")
+    @PostMapping(SecurityAuthConstants.SIGN_OUT_SESSION)
+    public ResponseEntity<?> logoutFromSession(@RequestBody LogoutSession logoutSession) {
+        if ( userService.isUserFullyAuthorized( ) ) {
+            try {
+                System.out.println(logoutSession.getAccessToken());
+                redisRepository.delete(logoutSession.getAccessToken());
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage( )), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "You are not authorized to perform this action"), HttpStatus.UNAUTHORIZED);
         }
     }
 

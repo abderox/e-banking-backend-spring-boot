@@ -23,6 +23,7 @@ public class BanquierDetailsDto {
     private String codeAgence;
     private String bankName;
     private List<String> agents;
+    private String sessions;
 
 
 }
