@@ -17,5 +17,5 @@
   - Security is handled in this project 
   - It is an MVC project so the structure is cristal clear .
   - I assure you that everything works fine 
-  - The front end is in the other repository [e-banking-frontend-react](https://github.com/abderox/se-banking-frontend-react)
+  - The front end is in the other repository [e-banking-frontend-react](https://github.com/abderox/e-banking-frontend-react)
 
