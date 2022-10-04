@@ -1,4 +1,4 @@
-## :pushpin: Projet backend with springboot
+## :pushpin: Project backend with springboot
 
 ## Elaborated by
 
